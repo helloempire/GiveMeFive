@@ -4,9 +4,9 @@ package com.example.givemefive.app;
  * Created by cyy on 14-3-15.
  */
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -94,12 +94,19 @@ public class SampleListFragment extends ListFragment {
                 ((MainActivity) getActivity()).showRight();
             }
         });
+
+
     }
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
+
+        //to lijj:改这里进
+        /*
         Intent intent = new Intent(getActivity(), DetailsActivity.class);
         startActivity(intent);
+        */
+        Log.i("list","这是第" + id + "行");
     }
 }
