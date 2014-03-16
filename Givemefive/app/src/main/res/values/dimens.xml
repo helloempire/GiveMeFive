@@ -6,4 +6,8 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="navigation_drawer_width">240dp</dimen>
 
+<<<<<<< HEAD
 </resources>
+=======
+</resources>
+>>>>>>> e973ee57f6fa460ff96c817c10405fa757c6c329

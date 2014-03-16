@@ -1,41 +1,72 @@
 package com.example.givemefive.app;
 
-import android.support.v7.app.ActionBarActivity;
+import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
+import android.view.View;
+import android.view.Window;
 
-//just for test --cyy
+import com.example.givemefive.app.view.SlidingMenu;
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends FragmentActivity {
+    private SlidingMenu mSlidingMenu;// 侧边栏的view
+    private LeftFragment leftFragment; // 左侧边栏的碎片化view
+    private RightFragment rightFragment; // 右侧边栏的碎片化view
+    private SampleListFragment centerFragment;// 中间内容碎片化的view
+    private FragmentTransaction ft; // 碎片化管理的事务
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        // 去标题栏
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        setContentView(com.example.givemefive.app.R.layout.activity_main);
+        Log.i("main","main 1");
+        mSlidingMenu = (SlidingMenu) findViewById(R.id.slidingMenu);
+        //mSlidingMenu = (SlidingMenu) findViewById(R.layout.activity_main);
+        Log.i("main","main 2");
+        mSlidingMenu.setLeftView(getLayoutInflater().inflate(
+                com.example.givemefive.app.R.layout.left_frame, null));
+        mSlidingMenu.setRightView(getLayoutInflater().inflate(
+                com.example.givemefive.app.R.layout.right_frame, null));
+        mSlidingMenu.setCenterView(getLayoutInflater().inflate(
+                com.example.givemefive.app.R.layout.center_frame, null));
+        Log.i("main","main 3");
 
-        
+        ft = this.getSupportFragmentManager().beginTransaction();
+        leftFragment = new LeftFragment();
+        rightFragment = new RightFragment();
+        ft.replace(com.example.givemefive.app.R.id.left_frame, leftFragment);
+        ft.replace(com.example.givemefive.app.R.id.right_frame, rightFragment);
+        Log.i("main","main 4");
+
+        centerFragment = new SampleListFragment();
+        ft.replace(com.example.givemefive.app.R.id.center_frame, centerFragment);
+        ft.commit();
+
     }
 
+    public void llronclick(View v) {
+        switch (v.getId()) {
+            case com.example.givemefive.app.R.id.llr_energy_management:
+                Intent intent = new Intent(this, DetailsActivity.class);
+                Log.i("main","llronclick");
+                startActivity(intent);
+                break;
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
+            default:
+                break;
         }
-        return super.onOptionsItemSelected(item);
+    }
+
+    public void showLeft() {
+        mSlidingMenu.showLeftView();
+    }
+
+    public void showRight() {
+        mSlidingMenu.showRightView();
     }
 
 }

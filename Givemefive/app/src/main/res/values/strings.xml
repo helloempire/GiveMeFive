@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Givemefive</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="app_name">GiveMeFive</string>
     <string name="action_settings">Settings</string>
+<<<<<<< HEAD
     <string name="title_activity_index">IndexActivity</string>
     <string name="title_section1">Section 1</string>
     <string name="title_section2">Section 2</string>
@@ -13,3 +13,14 @@
     <string name="action_example">Example action</string>
 
 </resources>
+=======
+    <string name="title1">test1</string>
+    <string name="title2">test2</string>
+    <string name="title3">test3</string>
+    <string name="title4">test4</string>
+    <string name="title5">test5</string>
+    <string name="title6">test6</string>
+    <string name="title7">test7</string>
+    <string name="test">琴房预定</string>
+</resources>
+>>>>>>> e973ee57f6fa460ff96c817c10405fa757c6c329
