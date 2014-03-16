@@ -30,6 +30,9 @@ public class SampleListFragment extends ListFragment {
         lv_left = (ImageView) mView.findViewById(com.example.givemefive.app.R.id.iv_left);
         iv_right = (ImageView) mView.findViewById(com.example.givemefive.app.R.id.iv_right);
         return mView;
+
+
+
     }
 
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -108,5 +111,7 @@ public class SampleListFragment extends ListFragment {
         startActivity(intent);
         */
         Log.i("list","这是第" + id + "行");
+
+        //miao~
     }
 }
