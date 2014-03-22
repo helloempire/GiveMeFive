@@ -11,6 +11,8 @@ import android.view.Window;
 import com.example.givemefive.app.view.SlidingMenu;
 
 public class MainActivity extends FragmentActivity {
+
+
     private SlidingMenu mSlidingMenu;// 侧边栏的view
     private LeftFragment leftFragment; // 左侧边栏的碎片化view
     private RightFragment rightFragment; // 右侧边栏的碎片化view
