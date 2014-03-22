@@ -25,7 +25,7 @@
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
+        android:layout_height="wrap_content"
         android:background="@drawable/booklist_menu_bg_unit2"
         android:orientation="vertical" >
 
@@ -50,11 +50,12 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:text="用户"
+                android:text="music"
                 android:textColor="#000" />
         </LinearLayout>
 
         <LinearLayout
+	        android:id="@+id/other_Layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="0.2"
@@ -74,9 +75,11 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:text="收藏"
+                android:text="other"
                 android:textColor="#000" />
         </LinearLayout>
+
+	    <!--
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -149,6 +152,8 @@
                 android:text="关于"
                 android:textColor="#000" />
         </LinearLayout>
+        -->
+
     </LinearLayout>
 
 </LinearLayout>

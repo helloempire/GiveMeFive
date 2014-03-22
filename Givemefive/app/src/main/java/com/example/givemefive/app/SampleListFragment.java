@@ -16,7 +16,6 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,19 +23,16 @@ public class SampleListFragment extends ListFragment {
     private ImageView lv_left;
     private ImageView iv_right;
 
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         View mView = inflater.inflate(com.example.givemefive.app.R.layout.list, null);
         lv_left = (ImageView) mView.findViewById(com.example.givemefive.app.R.id.iv_left);
         iv_right = (ImageView) mView.findViewById(com.example.givemefive.app.R.id.iv_right);
         return mView;
-
-
-
     }
 
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        /*
         Map<String, Object> item1 = new HashMap<String, Object>();
         item1.put("list_title", getString(com.example.givemefive.app.R.string.title1));
         item1.put("list_image", com.example.givemefive.app.R.drawable.p1);
@@ -49,7 +45,7 @@ public class SampleListFragment extends ListFragment {
         item3.put("list_title", getString(com.example.givemefive.app.R.string.title1));
         item3.put("list_image", com.example.givemefive.app.R.drawable.p3);
         item3.put("list_contect", getString(com.example.givemefive.app.R.string.test));
-        /*
+
         Map<String, Object> item4 = new HashMap<String, Object>();
         item4.put("list_title", getString(com.example.givemefive.app.R.string.title1));
         item4.put("list_image", com.example.givemefive.app.R.drawable.p4);
@@ -67,11 +63,13 @@ public class SampleListFragment extends ListFragment {
         item7.put("list_image", com.example.givemefive.app.R.drawable.p7);
         item7.put("list_contect", getString(com.example.givemefive.app.R.string.test));
          */
+
         List<Map<String, Object>> data = new ArrayList<Map<String, Object>>();
+         /*
         data.add(item1);
         data.add(item2);
         data.add(item3);
-        /*
+
         data.add(item4);
         data.add(item5);
         data.add(item6);
@@ -111,7 +109,5 @@ public class SampleListFragment extends ListFragment {
         startActivity(intent);
         */
         Log.i("list","这是第" + id + "行");
-
-        //miao~
     }
 }
