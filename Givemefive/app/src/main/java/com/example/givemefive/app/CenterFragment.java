@@ -4,6 +4,7 @@ package com.example.givemefive.app;
  * Created by cyy on 14-3-15.
  */
 
+import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -30,6 +32,9 @@ public class CenterFragment extends Fragment {
     private GridView gridView;
     private MainGridViewAdapter mainGridViewAdapter;
     private List<StateInfo> stateInfos;
+
+    private Button buttonHelp;
+    private TextView textViewIntroduction;
 
     public CenterFragment(Context con, int centerId){
         context = con;
@@ -70,40 +75,32 @@ public class CenterFragment extends Fragment {
         });
         textViewTitle.setText(titleCurrent);
 
-        //
+        //情况表
         gridView = (GridView)view.findViewById(R.id.gridViewTable);
         registerForContextMenu(gridView);
         stateInfos = new ArrayList<StateInfo>();
         StateInfo stateInfo1 = new StateInfo();
-        StateInfo stateInfo2 = new StateInfo();
-        StateInfo stateInfo3 = new StateInfo();
-        StateInfo stateInfo4 = new StateInfo();
-        StateInfo stateInfo5 = new StateInfo();
-        stateInfos.add(stateInfo1);
-        stateInfos.add(stateInfo2);
-        stateInfos.add(stateInfo3);
-        stateInfos.add(stateInfo4);
-        stateInfos.add(stateInfo5);
-        stateInfos.add(stateInfo1);
-        stateInfos.add(stateInfo2);
-        stateInfos.add(stateInfo3);
-        stateInfos.add(stateInfo4);
-        stateInfos.add(stateInfo5);
-        stateInfos.add(stateInfo1);
-        stateInfos.add(stateInfo2);
-        stateInfos.add(stateInfo3);
-        stateInfos.add(stateInfo4);
-        stateInfos.add(stateInfo5);
-        stateInfos.add(stateInfo1);
-        stateInfos.add(stateInfo2);
-        stateInfos.add(stateInfo3);
-        stateInfos.add(stateInfo4);
-        stateInfos.add(stateInfo5);
-        mainGridViewAdapter = new MainGridViewAdapter(context,stateInfos);
+        for (int i=0;i<150;i++){
+            stateInfos.add(stateInfo1);
+        }
+        mainGridViewAdapter = new MainGridViewAdapter(context,stateInfos,18,7);
         gridView.setNumColumns(19);
         gridView.setHorizontalScrollBarEnabled(true);
-
         gridView.setAdapter(mainGridViewAdapter);
+
+        //其它控件
+        textViewIntroduction = (TextView)view.findViewById(R.id.textViewIntroduction);
+        textViewIntroduction.setText("横轴表示房间号，纵轴表示时间");
+        buttonHelp = (Button)view.findViewById(R.id.buttonHelp);
+        buttonHelp.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Dialog dialog = new Dialog(context);
+                dialog.setContentView(R.layout.dialog_table_help);
+                dialog.show();
+            }
+        });
+
 
         return view;
     }
