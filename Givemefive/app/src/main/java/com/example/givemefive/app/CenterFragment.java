@@ -11,8 +11,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CenterFragment extends Fragment {
 
@@ -22,6 +26,10 @@ public class CenterFragment extends Fragment {
     private ImageView iv_right;
     private TextView textViewTitle;
     private String titleCurrent;
+
+    private GridView gridView;
+    private MainGridViewAdapter mainGridViewAdapter;
+    private List<StateInfo> stateInfos;
 
     public CenterFragment(Context con, int centerId){
         context = con;
@@ -63,6 +71,39 @@ public class CenterFragment extends Fragment {
         textViewTitle.setText(titleCurrent);
 
         //
+        gridView = (GridView)view.findViewById(R.id.gridViewTable);
+        registerForContextMenu(gridView);
+        stateInfos = new ArrayList<StateInfo>();
+        StateInfo stateInfo1 = new StateInfo();
+        StateInfo stateInfo2 = new StateInfo();
+        StateInfo stateInfo3 = new StateInfo();
+        StateInfo stateInfo4 = new StateInfo();
+        StateInfo stateInfo5 = new StateInfo();
+        stateInfos.add(stateInfo1);
+        stateInfos.add(stateInfo2);
+        stateInfos.add(stateInfo3);
+        stateInfos.add(stateInfo4);
+        stateInfos.add(stateInfo5);
+        stateInfos.add(stateInfo1);
+        stateInfos.add(stateInfo2);
+        stateInfos.add(stateInfo3);
+        stateInfos.add(stateInfo4);
+        stateInfos.add(stateInfo5);
+        stateInfos.add(stateInfo1);
+        stateInfos.add(stateInfo2);
+        stateInfos.add(stateInfo3);
+        stateInfos.add(stateInfo4);
+        stateInfos.add(stateInfo5);
+        stateInfos.add(stateInfo1);
+        stateInfos.add(stateInfo2);
+        stateInfos.add(stateInfo3);
+        stateInfos.add(stateInfo4);
+        stateInfos.add(stateInfo5);
+        mainGridViewAdapter = new MainGridViewAdapter(context,stateInfos);
+        gridView.setNumColumns(19);
+        gridView.setHorizontalScrollBarEnabled(true);
+
+        gridView.setAdapter(mainGridViewAdapter);
 
         return view;
     }

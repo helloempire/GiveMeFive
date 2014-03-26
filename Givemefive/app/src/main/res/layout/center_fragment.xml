@@ -46,10 +46,38 @@
         android:layout_height="fill_parent">
 
 
-        <GridView
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/gridViewTable" />
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Small Text"
+            android:id="@+id/textViewBaseInfo" />
+
+
+
+        <HorizontalScrollView
+            android:layout_width="fill_parent"
+            android:layout_height="200dp"
+            android:id="@+id/horizontalScrollView"
+            android:fillViewport="true"
+            android:measureAllChildren="true">
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+
+                <GridView
+                    android:layout_width="1000dp"
+                    android:layout_height="fill_parent"
+                    android:id="@+id/gridViewTable"
+                    android:columnWidth="32dp"
+                    android:horizontalSpacing="1dp"
+                    android:verticalSpacing="1dp" />
+                </LinearLayout>
+        </HorizontalScrollView>
+
+
     </LinearLayout>
 
 </LinearLayout>
