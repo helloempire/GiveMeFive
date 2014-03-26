@@ -3,12 +3,10 @@
 
     <string name="app_name">GiveMeFive</string>
     <string name="action_settings">Settings</string>
-    <string name="title1">test1</string>
-    <string name="title2">test2</string>
-    <string name="title3">test3</string>
-    <string name="title4">test4</string>
-    <string name="title5">test5</string>
-    <string name="title6">test6</string>
-    <string name="title7">test7</string>
-    <string name="test">琴房预定</string>
+
+    <string name="title_piano_room">琴房预定</string>
+    <string name="title_badminton_new">新体羽毛球馆</string>
+    <string name="title_badminton_old">南体羽毛球馆</string>
+    <string name="title_table_tennis_new">新体乒乓球馆</string>
+
 </resources>

@@ -30,9 +30,9 @@ public class MainActivity extends FragmentActivity {
         slidingMenu.setRightView(getLayoutInflater().inflate(R.layout.right_frame, null));
         slidingMenu.setCenterView(getLayoutInflater().inflate(R.layout.center_frame, null));
 
-        leftFragment = new LeftFragment();
-        rightFragment = new RightFragment();
-        centerFragment = new CenterFragment();
+        leftFragment = new LeftFragment(MainActivity.this);
+        rightFragment = new RightFragment(MainActivity.this);
+        centerFragment = new CenterFragment(MainActivity.this, 0);
 
         fragmentTransaction = this.getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.left_frame, leftFragment);

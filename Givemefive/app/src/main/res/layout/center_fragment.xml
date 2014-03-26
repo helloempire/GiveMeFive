@@ -21,13 +21,13 @@
             android:src="@drawable/booklist_menu_normal" />
 
         <TextView
+            android:id="@+id/textViewTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:gravity="center_horizontal"
             android:textColor="#000"
             android:layout_weight="0.8"
-            android:text="Fragment"
             android:textSize="17dp" />
 
         <ImageView
@@ -45,18 +45,11 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
 
-        <TextView
+
+        <GridView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Large Text           "
-            android:id="@+id/textView" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="200dp"
-            android:text="New Button"
-            android:id="@+id/button" />
+            android:id="@+id/gridViewTable" />
     </LinearLayout>
 
 </LinearLayout>
