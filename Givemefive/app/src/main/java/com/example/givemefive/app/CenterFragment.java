@@ -22,6 +22,11 @@ import java.util.List;
 
 public class CenterFragment extends Fragment {
 
+    private int CENTER_ID;
+    private int TOTAL_ROOM;
+    private int TOTAL_TIME;
+    private int BEGIN_TIME;
+
     private Context context;
 
     private ImageView lv_left;
@@ -38,9 +43,13 @@ public class CenterFragment extends Fragment {
 
     public CenterFragment(Context con, int centerId){
         context = con;
+        CENTER_ID = centerId;
         switch (centerId){
             case 0:
                 titleCurrent = context.getString(R.string.title_piano_room);
+                TOTAL_ROOM = 19;
+                TOTAL_TIME = 7;
+                BEGIN_TIME = 15;
                 break;
             case 1:
                 titleCurrent = context.getString(R.string.title_badminton_new);
@@ -83,8 +92,8 @@ public class CenterFragment extends Fragment {
         for (int i=0;i<150;i++){
             stateInfos.add(stateInfo1);
         }
-        mainGridViewAdapter = new MainGridViewAdapter(context,stateInfos,18,7);
-        gridView.setNumColumns(19);
+        mainGridViewAdapter = new MainGridViewAdapter(context,stateInfos, TOTAL_ROOM, TOTAL_TIME, BEGIN_TIME);//19间琴房，7个时间段
+        gridView.setNumColumns(TOTAL_ROOM+1);
         gridView.setHorizontalScrollBarEnabled(true);
         gridView.setAdapter(mainGridViewAdapter);
 

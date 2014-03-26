@@ -9,4 +9,35 @@
         android:layout_height="wrap_content"
         android:id="@+id/textViewState"
         android:textSize="20dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="我要预订"
+        android:id="@+id/buttonBookNow" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="查看评价"
+        android:id="@+id/buttonViewComment" />
+
+    <LinearLayout
+        android:id="@+id/layout_only_admin"
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="有人现场预订了"
+            android:id="@+id/buttonBooked" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="有人进去使用了"
+            android:id="@+id/buttonBeingUsed" />
+    </LinearLayout>
 </LinearLayout>

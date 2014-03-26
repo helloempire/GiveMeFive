@@ -8,5 +8,6 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="32dp"
-        android:id="@+id/textViewTime" />
+        android:id="@+id/textViewTime"
+        android:textSize="12dp" />
 </LinearLayout>
