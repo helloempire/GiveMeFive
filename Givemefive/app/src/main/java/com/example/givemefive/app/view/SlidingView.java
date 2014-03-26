@@ -97,36 +97,6 @@ public class SlidingView extends ViewGroup{
         }
     }
 
-    private boolean mIsBeingDragged;
-
-    @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
-
-        final int action = ev.getAction();
-        final float x = ev.getX();
-        final float y = ev.getY();
-
-        switch (action) {
-            case MotionEvent.ACTION_DOWN:
-                mLastMotionX = x;
-                mLastMotionY = y;
-                mIsBeingDragged = false;
-                break;
-
-            case MotionEvent.ACTION_MOVE:
-                final float dx = x - mLastMotionX;
-                final float xDiff = Math.abs(dx);
-                final float yDiff = Math.abs(y - mLastMotionY);
-                if (xDiff > mTouchSlop && xDiff > yDiff) {
-                    mIsBeingDragged = true;
-                    mLastMotionX = x;
-                }
-                break;
-
-        }
-        return mIsBeingDragged;
-    }
-
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
 
@@ -155,75 +125,67 @@ public class SlidingView extends ViewGroup{
                         && mLastMotionX > getMenuViewWidth()) {
                     return false;
                 }
-
                 break;
             case MotionEvent.ACTION_MOVE:
-                if (mIsBeingDragged) {
-                    enableChildrenCache();
-                    final float deltaX = mLastMotionX - x;
-                    mLastMotionX = x;
-                    float oldScrollX = getScrollX();
-                    float scrollX = oldScrollX + deltaX;
+                enableChildrenCache();
+                final float deltaX = mLastMotionX - x;
+                mLastMotionX = x;
+                float oldScrollXf = getScrollX();
+                float scrollX = oldScrollXf + deltaX;
 
-                    if (deltaX < 0 && oldScrollX < 0) { // left view
-                        final float leftBound = 0;
-                        final float rightBound = -getMenuViewWidth();
-                        if (scrollX > leftBound) {
-                            scrollX = leftBound;
-                        } else if (scrollX < rightBound) {
-                            scrollX = rightBound;
-                        }
-                        // mDetailView.setVisibility(View.INVISIBLE);
-                        // mMenuView.setVisibility(View.VISIBLE);
-                    } else if (deltaX > 0 && oldScrollX > 0) { // right view
-                        final float rightBound = getDetailViewWidth();
-                        final float leftBound = 0;
-                        if (scrollX < leftBound) {
-                            scrollX = leftBound;
-                        } else if (scrollX > rightBound) {
-                            scrollX = rightBound;
-                        }
-                        // mDetailView.setVisibility(View.VISIBLE);
-                        // mMenuView.setVisibility(View.INVISIBLE);
+                if (deltaX < 0 && oldScrollXf < 0) { // left view
+                    final float leftBound = 0;
+                    final float rightBound = -getMenuViewWidth();
+                    if (scrollX > leftBound) {
+                        scrollX = leftBound;
+                    } else if (scrollX < rightBound) {
+                        scrollX = rightBound;
                     }
-
-                    scrollTo((int) scrollX, getScrollY());
-
+                    // mDetailView.setVisibility(View.INVISIBLE);
+                    // mMenuView.setVisibility(View.VISIBLE);
+                } else if (deltaX > 0 && oldScrollXf > 0) { // right view
+                    final float rightBound = getDetailViewWidth();
+                    final float leftBound = 0;
+                    if (scrollX < leftBound) {
+                        scrollX = leftBound;
+                    } else if (scrollX > rightBound) {
+                        scrollX = rightBound;
+                    }
+                    // mDetailView.setVisibility(View.VISIBLE);
+                    // mMenuView.setVisibility(View.INVISIBLE);
                 }
+
+                scrollTo((int) scrollX, getScrollY());
                 break;
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP:
-                if (mIsBeingDragged) {
-                    final VelocityTracker velocityTracker = mVelocityTracker;
-                    velocityTracker.computeCurrentVelocity(1000);
-                    int velocityX = (int) velocityTracker.getXVelocity();
-                    velocityX = 0;
-                    Log.e("slidingview", "velocityX == " + velocityX);
-                    int oldScrollX = getScrollX();
-                    int dx = 0;
-                    if (oldScrollX < 0) {
-                        if (oldScrollX < -getMenuViewWidth() / 2
-                                || velocityX > SNAP_VELOCITY) {
-                            dx = -getMenuViewWidth() - oldScrollX;
-                        } else if (oldScrollX >= -getMenuViewWidth() / 2
-                                || velocityX < -SNAP_VELOCITY) {
-                            dx = -oldScrollX;
-                        }
-                    } else {
-                        if (oldScrollX > getDetailViewWidth() / 2
-                                || velocityX < -SNAP_VELOCITY) {
-                            dx = getDetailViewWidth() - oldScrollX;
-                        } else if (oldScrollX <= getDetailViewWidth() / 2
-                                || velocityX > SNAP_VELOCITY) {
-                            dx = -oldScrollX;
-                        }
+                final VelocityTracker velocityTracker = mVelocityTracker;
+                velocityTracker.computeCurrentVelocity(1000);
+                int velocityX = (int) velocityTracker.getXVelocity();
+                velocityX = 0;
+                Log.e("slidingview", "velocityX == " + velocityX);
+                int oldScrollX = getScrollX();
+                int dx = 0;
+                if (oldScrollX < 0) {
+                    if (oldScrollX < -getMenuViewWidth() / 2
+                            || velocityX > SNAP_VELOCITY) {
+                        dx = -getMenuViewWidth() - oldScrollX;
+                    } else if (oldScrollX >= -getMenuViewWidth() / 2
+                            || velocityX < -SNAP_VELOCITY) {
+                        dx = -oldScrollX;
                     }
-
-                    smoothScrollTo(dx);
-                    clearChildrenCache();
-
+                } else {
+                    if (oldScrollX > getDetailViewWidth() / 2
+                            || velocityX < -SNAP_VELOCITY) {
+                        dx = getDetailViewWidth() - oldScrollX;
+                    } else if (oldScrollX <= getDetailViewWidth() / 2
+                            || velocityX > SNAP_VELOCITY) {
+                        dx = -oldScrollX;
+                    }
                 }
 
+                smoothScrollTo(dx);
+                clearChildrenCache();
                 break;
 
         }
