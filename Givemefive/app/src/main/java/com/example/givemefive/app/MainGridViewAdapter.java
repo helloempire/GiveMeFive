@@ -1,5 +1,6 @@
 package com.example.givemefive.app;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.util.Log;
 import android.util.Pair;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.List;
@@ -47,25 +49,42 @@ public class MainGridViewAdapter extends BaseAdapter {
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-        final int time = getTimeId(i);
-        final int room = getRoomId(i);
+        int time = getTimeId(i);
+        int room = getRoomId(i);
 
         if (time == 0){
             view = LayoutInflater.from(context).inflate(R.layout.grid_item_top,null);
+
+            TextView textView = (TextView)view.findViewById(R.id.textViewRoom);
+            textView.setText(""+room);
         }else if(room == 0){
             view = LayoutInflater.from(context).inflate(R.layout.grid_item_left,null);
+
+            TextView textView = (TextView)view.findViewById(R.id.textViewTime);
+            time = time + 14;
+            textView.setText(""+time+":00");
         }else{
             view = LayoutInflater.from(context).inflate(R.layout.grid_item_center,null);
+
+            ImageButton imageButton = (ImageButton)view.findViewById(R.id.imageButtonCell);
+            final int ti = time + 14;
+            final int ro = room;
+            imageButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Dialog dialog = new Dialog(context);
+                    dialog.setContentView(R.layout.dialog_book_info);
+                    dialog.setTitle(ro+"号——开始时间:"+ti+":00");
+
+                    TextView textView = (TextView)dialog.findViewById(R.id.textViewState);
+                    textView.setText("状态：暂不开放");
+
+                    dialog.show();
+                }
+            });
         }
 
-        ImageButton imageButton = (ImageButton)view.findViewById(R.id.imageButtonCell);
 
-        imageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(context,""+time+" "+room,Toast.LENGTH_LONG).show();
-            }
-        });
 
         return view;
     }
