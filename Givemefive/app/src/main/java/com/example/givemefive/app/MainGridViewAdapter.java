@@ -73,6 +73,7 @@ public class MainGridViewAdapter extends BaseAdapter {
             ImageButton imageButton = (ImageButton)view.findViewById(R.id.imageButtonCell);
             final int ti = time + beginTime - 1;
             final int ro = room;
+            final int order = getOrder(room, time);
             imageButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -81,7 +82,7 @@ public class MainGridViewAdapter extends BaseAdapter {
                     dialog.setTitle(ro + "号——开始时间:" + ti + ":00");
 
                     TextView textView = (TextView)dialog.findViewById(R.id.textViewState);
-                    textView.setText("状态：暂不开放");
+                    textView.setText("状态：" + stateInfos.get(order).getStateName());
 
                     Button buttonBook = (Button)dialog.findViewById(R.id.buttonBookNow);
                     Button buttonComment = (Button)dialog.findViewById(R.id.buttonViewComment);
@@ -121,5 +122,9 @@ public class MainGridViewAdapter extends BaseAdapter {
 
     public int getRoomId(int position){
         return position%(totalRoom+1);
+    }
+
+    public int getOrder(int x, int y){
+        return (y-1)*totalRoom + x-1;
     }
 }

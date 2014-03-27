@@ -53,12 +53,21 @@ public class CenterFragment extends Fragment {
                 break;
             case 1:
                 titleCurrent = context.getString(R.string.title_badminton_new);
+                TOTAL_ROOM = 16;
+                TOTAL_TIME = 12;
+                BEGIN_TIME = 10;
                 break;
             case 2:
                 titleCurrent = context.getString(R.string.title_badminton_old);
+                TOTAL_ROOM = 5;
+                TOTAL_TIME = 12;
+                BEGIN_TIME = 8;
                 break;
             case 3:
                 titleCurrent = context.getString(R.string.title_table_tennis_new);
+                TOTAL_ROOM = 10;
+                TOTAL_TIME = 3;
+                BEGIN_TIME = 10;
                 break;
         }
     }
@@ -89,7 +98,7 @@ public class CenterFragment extends Fragment {
         registerForContextMenu(gridView);
         stateInfos = new ArrayList<StateInfo>();
         StateInfo stateInfo1 = new StateInfo();
-        for (int i=0;i<150;i++){
+        for (int i=0;i<(TOTAL_ROOM+1)*(TOTAL_TIME+1);i++){
             stateInfos.add(stateInfo1);
         }
         mainGridViewAdapter = new MainGridViewAdapter(context,stateInfos, TOTAL_ROOM, TOTAL_TIME, BEGIN_TIME);//19间琴房，7个时间段
