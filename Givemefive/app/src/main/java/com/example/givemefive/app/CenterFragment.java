@@ -16,9 +16,13 @@ import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.example.givemefive.app.capricorn.ArcMenu;
+import com.example.givemefive.app.capricorn.RayMenu;
 
 public class CenterFragment extends Fragment {
 
@@ -40,6 +44,14 @@ public class CenterFragment extends Fragment {
 
     private Button buttonHelp;
     private TextView textViewIntroduction;
+
+    //旋转菜单
+    private static final int[] ITEM_DRAWABLES = { R.drawable.composer_camera,
+            R.drawable.composer_music,
+            R.drawable.composer_place,
+            R.drawable.composer_sleep,
+            R.drawable.composer_thought,
+            R.drawable.composer_with };
 
     public CenterFragment(Context con, int centerId){
         context = con;
@@ -119,7 +131,47 @@ public class CenterFragment extends Fragment {
             }
         });
 
+        //旋转菜单
+        ArcMenu arcMenu = (ArcMenu) view.findViewById(R.id.arc_menu);
+        ArcMenu arcMenu2 = (ArcMenu) view.findViewById(R.id.arc_menu_2);
+
+        initArcMenu(arcMenu, ITEM_DRAWABLES);
+        initArcMenu(arcMenu2, ITEM_DRAWABLES);
+
+        RayMenu rayMenu = (RayMenu) view.findViewById(R.id.ray_menu);
+        final int itemCount = ITEM_DRAWABLES.length;
+        for (int i = 0; i < itemCount; i++) {
+            ImageView item = new ImageView(context);
+            item.setImageResource(ITEM_DRAWABLES[i]);
+
+            final int position = i;
+            rayMenu.addItem(item, new OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(context, "position:" + position, Toast.LENGTH_SHORT).show();
+                }
+            });// Add a menu item
+        }
+
 
         return view;
+    }
+
+    private void initArcMenu(ArcMenu menu, int[] itemDrawables) {
+        final int itemCount = itemDrawables.length;
+        for (int i = 0; i < itemCount; i++) {
+            ImageView item = new ImageView(context);
+            item.setImageResource(itemDrawables[i]);
+
+            final int position = i;
+            menu.addItem(item, new OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(context, "position:" + position, Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
 }
