@@ -10,10 +10,12 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 public class RightFragment extends Fragment {
 
     private Context context;
+    private Button bttestdatabase;
 
     public RightFragment(Context con){
         context=con;
@@ -22,6 +24,8 @@ public class RightFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.right_fragment, null);
+
+        
         return view;
     }
 
