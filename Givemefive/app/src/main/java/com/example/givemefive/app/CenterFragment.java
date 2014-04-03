@@ -21,7 +21,6 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.example.givemefive.app.capricorn.ArcMenu;
 import com.example.givemefive.app.capricorn.RayMenu;
 
 public class CenterFragment extends Fragment {
@@ -131,13 +130,6 @@ public class CenterFragment extends Fragment {
             }
         });
 
-        //旋转菜单
-        ArcMenu arcMenu = (ArcMenu) view.findViewById(R.id.arc_menu);
-        ArcMenu arcMenu2 = (ArcMenu) view.findViewById(R.id.arc_menu_2);
-
-        initArcMenu(arcMenu, ITEM_DRAWABLES);
-        initArcMenu(arcMenu2, ITEM_DRAWABLES);
-
         RayMenu rayMenu = (RayMenu) view.findViewById(R.id.ray_menu);
         final int itemCount = ITEM_DRAWABLES.length;
         for (int i = 0; i < itemCount; i++) {
@@ -158,20 +150,4 @@ public class CenterFragment extends Fragment {
         return view;
     }
 
-    private void initArcMenu(ArcMenu menu, int[] itemDrawables) {
-        final int itemCount = itemDrawables.length;
-        for (int i = 0; i < itemCount; i++) {
-            ImageView item = new ImageView(context);
-            item.setImageResource(itemDrawables[i]);
-
-            final int position = i;
-            menu.addItem(item, new OnClickListener() {
-
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(context, "position:" + position, Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
-    }
 }
