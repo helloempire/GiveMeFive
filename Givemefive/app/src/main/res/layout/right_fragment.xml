@@ -43,6 +43,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="testdatabse" />
+
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_gravity="center"
+                android:src="@drawable/line_read_option" />
+
+            <Button
+                android:id="@+id/buttonSetting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="设置" />
         </LinearLayout>
     </ScrollView>
 
