@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,6 +44,10 @@ public class CenterFragment extends Fragment {
 
     private Button buttonHelp;
     private TextView textViewIntroduction;
+
+    private Spinner spinnerSelectTime;
+    private Spinner spinnerSelectRoom;
+    private Button buttonFind;
 
     //旋转菜单
     private static final int[] ITEM_DRAWABLES = { R.drawable.composer_camera,
@@ -129,6 +134,11 @@ public class CenterFragment extends Fragment {
                 dialog.show();
             }
         });
+
+        spinnerSelectTime = (Spinner)view.findViewById(R.id.spinnerTime);
+        spinnerSelectRoom = (Spinner)view.findViewById(R.id.spinnerRoom);
+
+        buttonFind = (Button)view.findViewById(R.id.buttonCheck);
 
         RayMenu rayMenu = (RayMenu) view.findViewById(R.id.ray_menu);
         final int itemCount = ITEM_DRAWABLES.length;
