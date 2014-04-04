@@ -12,50 +12,76 @@
         android:orientation="vertical" >
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
-            android:text="服   务"
+            android:text="用 户 信 息"
             android:textColor="#000"
             android:textSize="17dip" />
     </LinearLayout>
 
-    <ScrollView
+
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
-        android:background="@drawable/booklist_menu_bg_unit" >
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="5dip" >
 
-        <LinearLayout
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/line_read_option" />
+
+        <Button
+            android:id="@+id/login"
             android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:orientation="vertical"
-            android:padding="5dip" >
+            android:layout_height="wrap_content"
+            android:text="login" />
 
-            <ImageView
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_gravity="center"
-                android:src="@drawable/line_read_option" />
+        <Button
+            android:id="@+id/register"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="register" />
 
-            <Button
-	            android:id="@+id/test_database"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="testdatabse" />
+        <Button
+            android:id="@+id/test_database"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="testdatabse" />
 
-            <ImageView
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_gravity="center"
-                android:src="@drawable/line_read_option" />
+        <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/line_read_option" />
 
-            <Button
-                android:id="@+id/buttonSetting"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="设置" />
-        </LinearLayout>
-    </ScrollView>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/oper_title"
+        android:gravity="center"
+        android:orientation="vertical" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="历 史 记 录"
+            android:textColor="#000"
+            android:textSize="17dip" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/buttonSetting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="设置" />
 
 </LinearLayout>

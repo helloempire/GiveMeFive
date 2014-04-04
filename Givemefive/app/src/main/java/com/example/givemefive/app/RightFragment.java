@@ -17,6 +17,8 @@ public class RightFragment extends Fragment {
 
     private Context context;
     private Button bttestdatabase;
+    private Button btlogin;
+    private Button btregister;
     private Button buttonSetting;
 
     public RightFragment(Context con){
@@ -28,7 +30,25 @@ public class RightFragment extends Fragment {
         View view = inflater.inflate(R.layout.right_fragment, null);
 
         bttestdatabase = (Button)view.findViewById(R.id.test_database);
+        btlogin = (Button)view.findViewById(R.id.login);
+        btregister = (Button)view.findViewById(R.id.register);
         buttonSetting = (Button)view.findViewById(R.id.buttonSetting);
+
+        btlogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(),login.class);
+                startActivity(intent);
+            }
+        });
+
+        btregister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(),Register.class);
+                startActivity(intent);
+            }
+        });
 
         bttestdatabase.setOnClickListener(new View.OnClickListener() {
             @Override
