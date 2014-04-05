@@ -1,15 +1,11 @@
 package com.example.givemefive.app;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
-import android.view.View;
 import android.view.Window;
 
 import com.example.givemefive.app.view.SlidingMenu;
-import com.example.givemefive.app.R;
 
 public class MainActivity extends FragmentActivity {
     private SlidingMenu slidingMenu;// 侧边栏的view
@@ -31,7 +27,7 @@ public class MainActivity extends FragmentActivity {
         slidingMenu.setCenterView(getLayoutInflater().inflate(R.layout.center_frame, null));
 
         leftFragment = new LeftFragment(MainActivity.this);
-        rightFragment = new RightFragment(MainActivity.this);
+        rightFragment = new RightFragment(MainActivity.this,0);
         centerFragment = new CenterFragment(MainActivity.this, 0);
 
         fragmentTransaction = this.getSupportFragmentManager().beginTransaction();

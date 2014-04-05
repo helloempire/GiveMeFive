@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="fill_parent"
+    android:layout_width="fill_parent"
+    android:layout_gravity="fill_horizontal"
+    android:orientation="vertical">
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="注册账号"
+        android:textSize="20dip"
+        android:id="@+id/Label"
+        />
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <EditText
+            android:layout_height="wrap_content"
+            android:id="@+id/nUsername"
+            android:selectAllOnFocus="true"
+            android:lines="1"
+            android:hint="输入用户名"
+            android:inputType="text"
+            android:layout_width="fill_parent"
+            android:layout_gravity="fill_horizontal"
+            android:gravity="fill_horizontal">
+        </EditText>
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <EditText
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:selectAllOnFocus="true"
+            android:lines="1"
+            android:id="@+id/nPassword"
+            android:hint="输入密码"
+            android:inputType="textPassword"
+            android:layout_gravity="fill_horizontal"
+            android:layout_width="match_parent">
+        </EditText>
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <EditText
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:selectAllOnFocus="true"
+            android:lines="1"
+            android:id="@+id/nConfiPass"
+            android:hint="再次确认密码"
+            android:inputType="textPassword"
+            android:layout_gravity="fill_horizontal"
+            android:layout_width="match_parent">
+        </EditText>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:layout_width="fill_parent">
+        <Button
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical|center_horizontal"
+            android:text="注 册"
+            android:id="@+id/nRegister"
+            android:clickable="true"
+            android:layout_width="fill_parent"
+            android:layout_weight="1">
+        </Button>
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:layout_width="fill_parent">
+        <Button
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical|center_horizontal"
+            android:text="后 退"
+            android:id="@+id/Back"
+            android:clickable="true" android:layout_width="fill_parent" android:layout_weight="1"></Button>
+    </LinearLayout>
+
+</LinearLayout>
