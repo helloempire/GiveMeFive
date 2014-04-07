@@ -76,7 +76,7 @@ public class test_database extends Activity {
     public void login(){
         httpClient = new DefaultHttpClient();
         try{
-            httpPost = new HttpPost(url + "index.php/login/appgenerallogin");
+            httpPost = new HttpPost(url + "/index.php/login/appgenerallogin");
 
             username = etusername.getText().toString();
             password = etpassword.getText().toString();
