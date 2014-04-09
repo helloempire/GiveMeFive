@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -120,6 +121,10 @@ public class test_database extends Activity {
                 status = datas.getString("status");
                 response = datas.getString("response");
                 test = "login test";
+
+                Toast.makeText(this.getApplicationContext(),
+                        response,
+                        Toast.LENGTH_SHORT).show();
 
                 tvusername.setText(status);
                 tvpassword.setText(response);

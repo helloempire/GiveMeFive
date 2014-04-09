@@ -30,7 +30,7 @@ public class RightFragment extends Fragment {
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        if (ISLogin == 1) {
+        if (ISLogin != 0) {
             //已经登录的情况
             View view = inflater.inflate(R.layout.right_fragment, null);
 
