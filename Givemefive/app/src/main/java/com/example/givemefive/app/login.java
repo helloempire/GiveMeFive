@@ -187,7 +187,11 @@ public class login extends Fragment {
             String thisPassword = thePassword.getText().toString();
 
             //Assign the hash to the password
-            thisPassword = md5(thisPassword);
+            //thisPassword = md5(thisPassword);
+
+            Toast.makeText(this.getActivity().getApplicationContext(),
+                    thisPassword,
+                    Toast.LENGTH_SHORT).show();
 
             //创建一个用户，用于向服务端发送数据时，存放的实体
             NameValuePair nameValuePair1 = new BasicNameValuePair("username", thisUsername);
@@ -229,12 +233,26 @@ public class login extends Fragment {
                         status + '\n' + response + '\n' + test,
                         Toast.LENGTH_SHORT).show();
 
-                FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.replace(R.id.right_frame, new RightFragment(getActivity(), 1));
-                fragmentTransaction.commit();
-            }
+                if (status == "true") {
 
+                    Toast.makeText(this.getActivity().getApplicationContext(),
+                            "登录成功",
+                            Toast.LENGTH_SHORT).show();
+
+                    FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+                    fragmentTransaction.replace(R.id.right_frame, new RightFragment(getActivity(), 1));
+                    fragmentTransaction.commit();
+                }
+                else{
+                    Toast.makeText(this.getActivity().getApplicationContext(),
+                            "用户名不存在或密码错误",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
         } catch (Exception e) {
+            Toast.makeText(this.getActivity().getApplicationContext(),
+                    "服务器不可用",
+                    Toast.LENGTH_SHORT).show();
             System.out.println();
             Log.i("testdatabase", "HttpStatus = fail");
         }

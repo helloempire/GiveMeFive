@@ -55,8 +55,6 @@ public class RightFragment extends Fragment {
             bttestdatabase = (Button) view.findViewById(R.id.testdb);
             btlogin = (Button) view.findViewById(R.id.login);
 
-
-
             btlogin.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
