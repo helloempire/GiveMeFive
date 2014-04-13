@@ -1,4 +1,4 @@
-package com.example.givemefive.app;
+package com.example.givemefive.app.adapters;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -13,6 +13,9 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.givemefive.app.R;
+import com.example.givemefive.app.StateInfo;
 
 import java.util.List;
 

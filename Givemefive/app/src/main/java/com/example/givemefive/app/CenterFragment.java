@@ -6,29 +6,31 @@ package com.example.givemefive.app;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
-import android.widget.ExpandableListAdapter;
-import android.widget.ExpandableListView;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
+import com.example.givemefive.app.adapters.MainGridViewAdapter;
+import com.example.givemefive.app.adapters.NotificationListAdapter;
 import com.example.givemefive.app.capricorn.RayMenu;
 
 public class CenterFragment extends Fragment {
@@ -68,31 +70,35 @@ public class CenterFragment extends Fragment {
             R.drawable.composer_with };
 
     //通知
+    private TextView textViewUpPullTitle;
+    private ListView listViewNotices;
+    private NotificationListAdapter notificationListAdapter;
+    private List<Map<String, String>> notifications;
 
     public CenterFragment(Context con, int centerId){
         context = con;
         CENTER_ID = centerId;
         switch (centerId){
             case 0:
-                titleCurrent = context.getString(R.string.title_piano_room);
+                titleCurrent = context.getString(R.string.title_piano_room)+context.getString(R.string.title_end_book);
                 TOTAL_ROOM = 19;
                 TOTAL_TIME = 7;
                 BEGIN_TIME = 15;
                 break;
             case 1:
-                titleCurrent = context.getString(R.string.title_badminton_new);
+                titleCurrent = context.getString(R.string.title_badminton_new)+context.getString(R.string.title_end_book);
                 TOTAL_ROOM = 16;
                 TOTAL_TIME = 12;
                 BEGIN_TIME = 10;
                 break;
             case 2:
-                titleCurrent = context.getString(R.string.title_badminton_old);
+                titleCurrent = context.getString(R.string.title_badminton_old)+context.getString(R.string.title_end_book);
                 TOTAL_ROOM = 5;
                 TOTAL_TIME = 12;
                 BEGIN_TIME = 8;
                 break;
             case 3:
-                titleCurrent = context.getString(R.string.title_table_tennis_new);
+                titleCurrent = context.getString(R.string.title_table_tennis_new)+context.getString(R.string.title_end_book);
                 TOTAL_ROOM = 10;
                 TOTAL_TIME = 3;
                 BEGIN_TIME = 10;
@@ -188,7 +194,20 @@ public class CenterFragment extends Fragment {
         }
 
         //通知
-
+        textViewUpPullTitle = (TextView)view.findViewById(R.id.textViewUpPanelTitle);
+        textViewUpPullTitle.setText(context.getString(R.string.title_piano_room)+context.getString(R.string.title_end_notice));
+        listViewNotices = (ListView)view.findViewById(R.id.listViewNotices);
+        notifications = new ArrayList<Map<String, String>>();
+        for (int i=0;i<10;i++){
+            Map<String, String> temp = new HashMap<String, String>();
+            temp.put("title","biaoti:"+i);
+            temp.put("time","shijian:"+i);
+            temp.put("type","leixing:"+i);
+            temp.put("content","zhengwen:"+i);
+            notifications.add(temp);
+        }
+        notificationListAdapter = new NotificationListAdapter(context, R.layout.item_list_notification, notifications);
+        listViewNotices.setAdapter(notificationListAdapter);
 
         return view;
     }
@@ -239,6 +258,7 @@ public class CenterFragment extends Fragment {
         });
     }
 
+    //spinner显示的内容
     private String[] getSpinnerStringsTime(){
         String[] strings = new String[TOTAL_TIME+1];
         strings[0] = "全部时间";
@@ -247,7 +267,6 @@ public class CenterFragment extends Fragment {
         }
         return strings;
     }
-
     private String[] getSpinnerStringsRoom(){
         String[] strings = new String[TOTAL_ROOM+1];
         strings[0] = "全部场地";
