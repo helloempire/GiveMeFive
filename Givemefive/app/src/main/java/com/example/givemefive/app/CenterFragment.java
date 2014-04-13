@@ -17,6 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -31,6 +32,8 @@ import java.util.Set;
 
 import com.example.givemefive.app.adapters.MainGridViewAdapter;
 import com.example.givemefive.app.adapters.NotificationListAdapter;
+import com.example.givemefive.app.adapters.SomeRoomListAdapter;
+import com.example.givemefive.app.adapters.SomeTimeListAdapter;
 import com.example.givemefive.app.capricorn.RayMenu;
 
 public class CenterFragment extends Fragment {
@@ -247,11 +250,11 @@ public class CenterFragment extends Fragment {
                 if (beginTimeClock==0 && selectRoomNum==0){
                     Toast.makeText(getActivity(),"请选择需要查询的项目",Toast.LENGTH_SHORT).show();
                 }else if(beginTimeClock==0){
-
+                    showDialogSomeRoom(selectRoomNum);
                 }else if(selectRoomNum==0){
-
+                    showDialogSomeTime(beginTimeClock);
                 }else {
-
+                    showDialogBooking(context, stateInfos.get(getPosition(beginTimeClock,selectRoomNum)));
                 }
 
             }
@@ -274,6 +277,82 @@ public class CenterFragment extends Fragment {
             strings[i] = String.valueOf(i);
         }
         return strings;
+    }
+
+    //工具类
+    public int getPosition(int time, int room){
+        int position = time*(TOTAL_TIME+1)+room;
+        return position;
+    }
+
+    //Dialog
+    //针对某时间某场地的预订
+    private void showDialogBooking(Context context, StateInfo stateInfo){
+        final Dialog dialog = new Dialog(context);
+        dialog.setContentView(R.layout.dialog_book_info);
+        dialog.setTitle(stateInfo.getRoomId() + "号——开始时间:" + stateInfo.getTimeId() + ":00");
+
+        TextView textView = (TextView)dialog.findViewById(R.id.textViewState);
+        textView.setText("状态：" + stateInfo.getStateName());
+
+        Button buttonBook = (Button)dialog.findViewById(R.id.buttonBookNow);
+        Button buttonComment = (Button)dialog.findViewById(R.id.buttonViewComment);
+        buttonBook.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.hide();
+            }
+        });
+        buttonComment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.hide();
+            }
+        });
+
+        LinearLayout linearLayout = (LinearLayout)dialog.findViewById(R.id.layout_only_admin);
+
+        dialog.show();
+    }
+
+    //某一个时间内所有房间的情况
+    private void showDialogSomeTime(int beginTime){
+        final Dialog dialog = new Dialog(context);
+        dialog.setContentView(R.layout.dialog_some_time);
+        dialog.setTitle("时间:" + beginTime + ":00~"+String.valueOf(beginTime+1)+":00");
+
+        ListView listViewSomeTime = (ListView)dialog.findViewById(R.id.listViewDialogSomeTime);
+
+        List<StateInfo> stateInfoSomeTime = new ArrayList<StateInfo>();
+        for (int i = 1;i<=TOTAL_ROOM;i++){
+            stateInfoSomeTime.add(stateInfos.get(getPosition(beginTime-BEGIN_TIME,i)));
+        }
+        SomeTimeListAdapter someTimeListAdapter = new SomeTimeListAdapter(context, R.layout.item_list_dialog_some_time, stateInfoSomeTime);
+        listViewSomeTime.setAdapter(someTimeListAdapter);
+
+        dialog.show();
+    }
+
+    //某一个房间在两天之内的情况
+    private void showDialogSomeRoom(int roomNum){
+        final Dialog dialog = new Dialog(context);
+        dialog.setContentView(R.layout.dialog_some_room);
+        dialog.setTitle(roomNum + "号");
+
+        ListView listViewSomeRoom = (ListView)dialog.findViewById(R.id.listViewDialogSomeRoom);
+        TextView textViewResume = (TextView)dialog.findViewById(R.id.textViewRoomResume);
+        ListView listViewComments = (ListView)dialog.findViewById(R.id.listViewRoomComments);
+
+        List<StateInfo> stateInfoRoom = new ArrayList<StateInfo>();
+        for (int i=BEGIN_TIME;i<BEGIN_TIME+TOTAL_TIME;i++){
+            stateInfoRoom.add(stateInfos.get(getPosition(i-BEGIN_TIME, roomNum)));
+        }
+        SomeRoomListAdapter someRoomListAdapter = new SomeRoomListAdapter(context, R.layout.item_list_dialog_some_room, stateInfoRoom);
+        listViewSomeRoom.setAdapter(someRoomListAdapter);
+
+        textViewResume.setText("简介：");
+
+        dialog.show();
     }
 
 }

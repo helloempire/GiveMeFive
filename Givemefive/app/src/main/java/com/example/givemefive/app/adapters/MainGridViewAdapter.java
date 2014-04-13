@@ -80,31 +80,7 @@ public class MainGridViewAdapter extends BaseAdapter {
             imageButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    final Dialog dialog = new Dialog(context);
-                    dialog.setContentView(R.layout.dialog_book_info);
-                    dialog.setTitle(ro + "号——开始时间:" + ti + ":00");
-
-                    TextView textView = (TextView)dialog.findViewById(R.id.textViewState);
-                    textView.setText("状态：" + stateInfos.get(order).getStateName());
-
-                    Button buttonBook = (Button)dialog.findViewById(R.id.buttonBookNow);
-                    Button buttonComment = (Button)dialog.findViewById(R.id.buttonViewComment);
-                    buttonBook.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            dialog.hide();
-                        }
-                    });
-                    buttonComment.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            dialog.hide();
-                        }
-                    });
-
-                    LinearLayout linearLayout = (LinearLayout)dialog.findViewById(R.id.layout_only_admin);
-
-                    dialog.show();
+                    showDialogBooking(context, stateInfos.get(order));
                 }
             });
         }
@@ -129,5 +105,33 @@ public class MainGridViewAdapter extends BaseAdapter {
 
     public int getOrder(int x, int y){
         return (y-1)*totalRoom + x-1;
+    }
+
+    private void showDialogBooking(Context context, StateInfo stateInfo){
+        final Dialog dialog = new Dialog(context);
+        dialog.setContentView(R.layout.dialog_book_info);
+        dialog.setTitle(stateInfo.getRoomId() + "号——开始时间:" + stateInfo.getTimeId() + ":00");
+
+        TextView textView = (TextView)dialog.findViewById(R.id.textViewState);
+        textView.setText("状态：" + stateInfo.getStateName());
+
+        Button buttonBook = (Button)dialog.findViewById(R.id.buttonBookNow);
+        Button buttonComment = (Button)dialog.findViewById(R.id.buttonViewComment);
+        buttonBook.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.hide();
+            }
+        });
+        buttonComment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.hide();
+            }
+        });
+
+        LinearLayout linearLayout = (LinearLayout)dialog.findViewById(R.id.layout_only_admin);
+
+        dialog.show();
     }
 }
