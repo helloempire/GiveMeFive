@@ -68,7 +68,6 @@ public class CenterFragment extends Fragment {
             R.drawable.composer_with };
 
     //通知
-    private ExpandableListView expandableListView;
 
     public CenterFragment(Context con, int centerId){
         context = con;
@@ -189,7 +188,6 @@ public class CenterFragment extends Fragment {
         }
 
         //通知
-        expandableListView = (ExpandableListView)view.findViewById(R.id.expandableListViewNotices);
 
 
         return view;
