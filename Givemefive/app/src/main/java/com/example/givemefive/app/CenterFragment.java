@@ -6,13 +6,20 @@ package com.example.givemefive.app;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
+import android.widget.ExpandableListAdapter;
+import android.widget.ExpandableListView;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -44,9 +51,12 @@ public class CenterFragment extends Fragment {
 
     private Button buttonHelp;
     private TextView textViewIntroduction;
+    private Button buttonTomorrow;
 
     private Spinner spinnerSelectTime;
     private Spinner spinnerSelectRoom;
+    private int beginTimeClock = 0;
+    private int selectRoomNum = 0;
     private Button buttonFind;
 
     //旋转菜单
@@ -56,6 +66,9 @@ public class CenterFragment extends Fragment {
             R.drawable.composer_sleep,
             R.drawable.composer_thought,
             R.drawable.composer_with };
+
+    //通知
+    private ExpandableListView expandableListView;
 
     public CenterFragment(Context con, int centerId){
         context = con;
@@ -124,7 +137,7 @@ public class CenterFragment extends Fragment {
 
         //其它控件
         textViewIntroduction = (TextView)view.findViewById(R.id.textViewIntroduction);
-        textViewIntroduction.setText("横轴表示房间号，纵轴表示时间");
+        textViewIntroduction.setText("横轴表示编号，纵轴表示时间");
         buttonHelp = (Button)view.findViewById(R.id.buttonHelp);
         buttonHelp.setOnClickListener(new OnClickListener() {
             @Override
@@ -135,11 +148,30 @@ public class CenterFragment extends Fragment {
             }
         });
 
+        //查看明天的情况
+        buttonTomorrow = (Button)view.findViewById(R.id.buttonTomorrow);
+        buttonTomorrow.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        //输入查询
         spinnerSelectTime = (Spinner)view.findViewById(R.id.spinnerTime);
         spinnerSelectRoom = (Spinner)view.findViewById(R.id.spinnerRoom);
 
-        buttonFind = (Button)view.findViewById(R.id.buttonCheck);
+        String[] times = getSpinnerStringsTime();
+        String[] rooms = getSpinnerStringsRoom();
+        ArrayAdapter arrayAdapterTime = new ArrayAdapter(getActivity(),android.R.layout.simple_spinner_item,times);
+        ArrayAdapter arrayAdapterRoom = new ArrayAdapter(getActivity(),android.R.layout.simple_spinner_item,rooms);
+        spinnerSelectTime.setAdapter(arrayAdapterTime);
+        spinnerSelectRoom.setAdapter(arrayAdapterRoom);
 
+        buttonFind = (Button)view.findViewById(R.id.buttonCheck);
+        initInputFindListener();
+
+        //菜单
         RayMenu rayMenu = (RayMenu) view.findViewById(R.id.ray_menu);
         final int itemCount = ITEM_DRAWABLES.length;
         for (int i = 0; i < itemCount; i++) {
@@ -156,8 +188,75 @@ public class CenterFragment extends Fragment {
             });// Add a menu item
         }
 
+        //通知
+        expandableListView = (ExpandableListView)view.findViewById(R.id.expandableListViewNotices);
+
 
         return view;
+    }
+
+    //输入查找
+    private void initInputFindListener(){
+        spinnerSelectTime.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if (i!=0){
+                    beginTimeClock = i+BEGIN_TIME-1;
+                }else{
+                    beginTimeClock = 0;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+        spinnerSelectRoom.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                selectRoomNum = i;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        buttonFind.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (beginTimeClock==0 && selectRoomNum==0){
+                    Toast.makeText(getActivity(),"请选择需要查询的项目",Toast.LENGTH_SHORT).show();
+                }else if(beginTimeClock==0){
+
+                }else if(selectRoomNum==0){
+
+                }else {
+
+                }
+
+            }
+        });
+    }
+
+    private String[] getSpinnerStringsTime(){
+        String[] strings = new String[TOTAL_TIME+1];
+        strings[0] = "全部时间";
+        for (int i=BEGIN_TIME;i<BEGIN_TIME+TOTAL_TIME;i++){
+            strings[i-BEGIN_TIME+1] = String.valueOf(i)+":00~"+String.valueOf(i+1)+":00";
+        }
+        return strings;
+    }
+
+    private String[] getSpinnerStringsRoom(){
+        String[] strings = new String[TOTAL_ROOM+1];
+        strings[0] = "全部场地";
+        for (int i=1;i<=TOTAL_ROOM;i++){
+            strings[i] = String.valueOf(i);
+        }
+        return strings;
     }
 
 }
