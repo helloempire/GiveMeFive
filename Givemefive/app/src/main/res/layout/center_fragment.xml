@@ -70,9 +70,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/textViewIntroduction"
-                    android:textSize="16dp"
+                    android:textSize="10dp"
                     android:layout_weight="0.8" />
 
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/imageButtonRefresh"
+                    android:layout_weight="0.4" />
 
                 <Button
                     android:layout_width="wrap_content"

@@ -59,6 +59,7 @@ public class CenterFragment extends Fragment {
     private Button buttonHelp;
     private TextView textViewIntroduction;
     private Button buttonTomorrow;
+    private Button buttonRefresh;
 
     private Spinner spinnerSelectTime;
     private Spinner spinnerSelectRoom;
@@ -162,6 +163,10 @@ public class CenterFragment extends Fragment {
         gridView.setNumColumns(TOTAL_ROOM+1);
         gridView.setHorizontalScrollBarEnabled(true);
         gridView.setAdapter(mainGridViewAdapter);
+
+        //手动刷新
+        buttonRefresh = (Button)view.findViewById(R.id.imageButtonRefresh);
+        initRefresh();
 
         //其它控件
         textViewIntroduction = (TextView)view.findViewById(R.id.textViewIntroduction);
@@ -281,6 +286,16 @@ public class CenterFragment extends Fragment {
         });
     }
 
+    //刷新
+    private void initRefresh(){
+        buttonRefresh.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                
+            }
+        });
+    }
+
     //spinner显示的内容
     private String[] getSpinnerStringsTime(){
         String[] strings = new String[TOTAL_TIME+1];
@@ -365,7 +380,7 @@ public class CenterFragment extends Fragment {
 
         //房态
         List<StateInfo> stateInfoRoom = new ArrayList<StateInfo>();
-        for (int i=BEGIN_TIME;i<BEGIN_TIME+TOTAL_TIME;i++){Log.i("ljj","timeId:"+stateInfos.get(getPosition(i, roomNum)).getTimeId());
+        for (int i=BEGIN_TIME;i<BEGIN_TIME+TOTAL_TIME;i++){
             stateInfoRoom.add(stateInfos.get(getPosition(i, roomNum)));
         }
         SomeRoomListAdapter someRoomListAdapter = new SomeRoomListAdapter(context, R.layout.item_list_dialog_some_room, stateInfoRoom);

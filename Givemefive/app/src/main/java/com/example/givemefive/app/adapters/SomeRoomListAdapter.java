@@ -50,7 +50,6 @@ public class SomeRoomListAdapter extends ArrayAdapter<StateInfo> {
         } else {
             holder = (ViewHolder) view.getTag();
         }
-        Log.i("ljj",""+stateInfos.get(i).getTimeId());
 
         holder.tvTime.setText(stateInfos.get(i).getTimeId()+":00~"+String.valueOf(stateInfos.get(i).getTimeId()+1)+":00");
         holder.tvState.setText(stateInfos.get(i).getStateName());
