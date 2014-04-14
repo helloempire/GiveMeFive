@@ -17,6 +17,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -59,7 +60,7 @@ public class CenterFragment extends Fragment {
     private Button buttonHelp;
     private TextView textViewIntroduction;
     private Button buttonTomorrow;
-    private Button buttonRefresh;
+    private ImageButton buttonRefresh;
 
     private Spinner spinnerSelectTime;
     private Spinner spinnerSelectRoom;
@@ -165,7 +166,7 @@ public class CenterFragment extends Fragment {
         gridView.setAdapter(mainGridViewAdapter);
 
         //手动刷新
-        buttonRefresh = (Button)view.findViewById(R.id.imageButtonRefresh);
+        buttonRefresh = (ImageButton)view.findViewById(R.id.imageButtonRefresh);
         initRefresh();
 
         //其它控件
@@ -234,6 +235,7 @@ public class CenterFragment extends Fragment {
             temp.put("content","zhengwen:"+i);
             notifications.add(temp);
         }
+        listViewNotices.addFooterView(LayoutInflater.from(context).inflate(R.layout.item_list_dialog_footer,null));
         notificationListAdapter = new NotificationListAdapter(context, R.layout.item_list_notification, notifications);
         listViewNotices.setAdapter(notificationListAdapter);
 
@@ -291,7 +293,7 @@ public class CenterFragment extends Fragment {
         buttonRefresh.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                
+
             }
         });
     }
@@ -399,6 +401,7 @@ public class CenterFragment extends Fragment {
             temp.put("id",""+i);
             comments.add(temp);
         }
+        listViewComments.addFooterView(LayoutInflater.from(context).inflate(R.layout.item_list_dialog_footer,null));
         RoomCommentAdapter roomCommentAdapter = new RoomCommentAdapter(context, R.layout.item_list_dialog_comment, comments);
         listViewComments.setAdapter(roomCommentAdapter);
 
