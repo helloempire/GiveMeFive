@@ -50,8 +50,8 @@ public class SomeTimeListAdapter extends ArrayAdapter<StateInfo> {
             holder = (ViewHolder) view.getTag();
         }
 
-        //holder.tvRoom.setText(stateInfos.get(i).getRoomId());
-        //holder.tvState.setText(stateInfos.get(i).getStateName());
+        holder.tvRoom.setText(stateInfos.get(i).getRoomId()+"号");
+        holder.tvState.setText(stateInfos.get(i).getStateName());
 
         final int ii = i;
         holder.btDo.setOnClickListener(new View.OnClickListener() {

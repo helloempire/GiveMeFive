@@ -8,6 +8,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -32,6 +33,7 @@ import java.util.Set;
 
 import com.example.givemefive.app.adapters.MainGridViewAdapter;
 import com.example.givemefive.app.adapters.NotificationListAdapter;
+import com.example.givemefive.app.adapters.RoomCommentAdapter;
 import com.example.givemefive.app.adapters.SomeRoomListAdapter;
 import com.example.givemefive.app.adapters.SomeTimeListAdapter;
 import com.example.givemefive.app.capricorn.RayMenu;
@@ -134,9 +136,27 @@ public class CenterFragment extends Fragment {
         gridView = (GridView)view.findViewById(R.id.gridViewTable);
         registerForContextMenu(gridView);
         stateInfos = new ArrayList<StateInfo>();
-        StateInfo stateInfo1 = new StateInfo();
-        for (int i=0;i<(TOTAL_ROOM+1)*(TOTAL_TIME+1);i++){
-            stateInfos.add(stateInfo1);
+        StateInfo stateInfoNull = null;
+        StateInfo stateInfoTmp = null;
+        for (int i=0;i<=TOTAL_ROOM;i++){//第一行
+            stateInfoNull = new StateInfo();
+            stateInfoNull.setTimeId(0);
+            stateInfoNull.setRoomId(i);
+            stateInfos.add(stateInfoNull);
+        }
+        for (int i=0;i<TOTAL_TIME;i++){//每一行
+            stateInfoNull = new StateInfo();
+            stateInfoNull.setRoomId(0);
+            stateInfoNull.setTimeId(i + BEGIN_TIME);
+            stateInfos.add(stateInfoNull);//第一列
+            for (int j=1;j<=TOTAL_ROOM;j++){
+                stateInfoTmp = new StateInfo();
+                stateInfoTmp.setRoomId(j);
+                stateInfoTmp.setTimeId(i + BEGIN_TIME);
+                stateInfoTmp.setStateId(0);
+                stateInfoTmp.setStateName("空闲");
+                stateInfos.add(stateInfoTmp);
+            }
         }
         mainGridViewAdapter = new MainGridViewAdapter(context,stateInfos, TOTAL_ROOM, TOTAL_TIME, BEGIN_TIME);//19间琴房，7个时间段
         gridView.setNumColumns(TOTAL_ROOM+1);
@@ -250,9 +270,9 @@ public class CenterFragment extends Fragment {
                 if (beginTimeClock==0 && selectRoomNum==0){
                     Toast.makeText(getActivity(),"请选择需要查询的项目",Toast.LENGTH_SHORT).show();
                 }else if(beginTimeClock==0){
-                    showDialogSomeRoom(selectRoomNum);
+                    showDialogSomeRoom(selectRoomNum);//从1开始
                 }else if(selectRoomNum==0){
-                    showDialogSomeTime(beginTimeClock);
+                    showDialogSomeTime(beginTimeClock);//从BEGIN_TIME开始
                 }else {
                     showDialogBooking(context, stateInfos.get(getPosition(beginTimeClock,selectRoomNum)));
                 }
@@ -281,7 +301,7 @@ public class CenterFragment extends Fragment {
 
     //工具类
     public int getPosition(int time, int room){
-        int position = time*(TOTAL_TIME+1)+room;
+        int position = (time-BEGIN_TIME+1)*(TOTAL_ROOM+1)+room;
         return position;
     }
 
@@ -325,7 +345,7 @@ public class CenterFragment extends Fragment {
 
         List<StateInfo> stateInfoSomeTime = new ArrayList<StateInfo>();
         for (int i = 1;i<=TOTAL_ROOM;i++){
-            stateInfoSomeTime.add(stateInfos.get(getPosition(beginTime-BEGIN_TIME,i)));
+            stateInfoSomeTime.add(stateInfos.get(getPosition(beginTime,i)));
         }
         SomeTimeListAdapter someTimeListAdapter = new SomeTimeListAdapter(context, R.layout.item_list_dialog_some_time, stateInfoSomeTime);
         listViewSomeTime.setAdapter(someTimeListAdapter);
@@ -343,14 +363,29 @@ public class CenterFragment extends Fragment {
         TextView textViewResume = (TextView)dialog.findViewById(R.id.textViewRoomResume);
         ListView listViewComments = (ListView)dialog.findViewById(R.id.listViewRoomComments);
 
+        //房态
         List<StateInfo> stateInfoRoom = new ArrayList<StateInfo>();
-        for (int i=BEGIN_TIME;i<BEGIN_TIME+TOTAL_TIME;i++){
-            stateInfoRoom.add(stateInfos.get(getPosition(i-BEGIN_TIME, roomNum)));
+        for (int i=BEGIN_TIME;i<BEGIN_TIME+TOTAL_TIME;i++){Log.i("ljj","timeId:"+stateInfos.get(getPosition(i, roomNum)).getTimeId());
+            stateInfoRoom.add(stateInfos.get(getPosition(i, roomNum)));
         }
         SomeRoomListAdapter someRoomListAdapter = new SomeRoomListAdapter(context, R.layout.item_list_dialog_some_room, stateInfoRoom);
         listViewSomeRoom.setAdapter(someRoomListAdapter);
 
+        //简介
         textViewResume.setText("简介：");
+
+        //评论
+        List<Map<String,String>> comments = new ArrayList<Map<String, String>>();
+        for(int i=0;i<10;i++){
+            Map<String, String> temp = new HashMap<String, String>();
+            temp.put("content","pinglun");
+            temp.put("time","00:00");
+            temp.put("user","wo");
+            temp.put("id",""+i);
+            comments.add(temp);
+        }
+        RoomCommentAdapter roomCommentAdapter = new RoomCommentAdapter(context, R.layout.item_list_dialog_comment, comments);
+        listViewComments.setAdapter(roomCommentAdapter);
 
         dialog.show();
     }

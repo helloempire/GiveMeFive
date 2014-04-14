@@ -2,6 +2,7 @@ package com.example.givemefive.app.adapters;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,9 +50,10 @@ public class SomeRoomListAdapter extends ArrayAdapter<StateInfo> {
         } else {
             holder = (ViewHolder) view.getTag();
         }
+        Log.i("ljj",""+stateInfos.get(i).getTimeId());
 
-        //holder.tvTime.setText(stateInfos.get(i).getTimeId());
-        //holder.tvState.setText(stateInfos.get(i).getStateName());
+        holder.tvTime.setText(stateInfos.get(i).getTimeId()+":00~"+String.valueOf(stateInfos.get(i).getTimeId()+1)+":00");
+        holder.tvState.setText(stateInfos.get(i).getStateName());
 
         final int ii = i;
         holder.btDo.setOnClickListener(new View.OnClickListener() {
