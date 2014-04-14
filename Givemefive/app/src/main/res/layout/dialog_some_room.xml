@@ -53,6 +53,25 @@
 
             </LinearLayout>
 
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/editTextComment"
+                    android:layout_weight="0.9"
+                    android:hint="我也来说两句吧" />
+
+                <ImageButton
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/imageButtonSubCmt"
+                    android:layout_weight="0.1" />
+            </LinearLayout>
+
             <TextView
                 android:id="@+id/textViewRoomResume"
                 android:layout_width="match_parent"

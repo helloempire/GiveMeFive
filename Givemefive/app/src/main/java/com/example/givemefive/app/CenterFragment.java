@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -78,6 +79,9 @@ public class CenterFragment extends Fragment {
     private ListView listViewNotices;
     private NotificationListAdapter notificationListAdapter;
     private List<Map<String, String>> notifications;
+
+    //评论
+    private List<Map<String,String>> comments;
 
     public CenterFragment(Context con, int centerId){
         context = con;
@@ -220,8 +224,8 @@ public class CenterFragment extends Fragment {
         initNotifications();
 
         View footerView = LayoutInflater.from(context).inflate(R.layout.item_list_dialog_footer, null);
-        ImageButton buttonLoadMore = (ImageButton)footerView.findViewById(R.id.imageButtonMore);
-        buttonLoadMore.setOnClickListener(new OnClickListener() {
+        ImageButton imageButtonLoadMore = (ImageButton)footerView.findViewById(R.id.imageButtonMore);
+        imageButtonLoadMore.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 loadMoreNotifications();
@@ -336,8 +340,8 @@ public class CenterFragment extends Fragment {
 
     //初始化评论
     //参数，room：房间号
-    private List<Map<String,String>> getComments(int room){
-        List<Map<String,String>> comments = new ArrayList<Map<String, String>>();
+    private void initComments(int room){
+        comments = new ArrayList<Map<String, String>>();
         for(int i=0;i<10;i++){
             Map<String, String> temp = new HashMap<String, String>();
             temp.put("content","pinglun");
@@ -346,12 +350,10 @@ public class CenterFragment extends Fragment {
             temp.put("id",""+i);
             comments.add(temp);
         }
-        return comments;
     }
     //加载更多评论
     //参数，room：房间号
-    private List<Map<String,String>> loadMoreComments(int room, List<Map<String,String>> comments){
-        return comments;
+    private void loadMoreComments(int room){
     }
     /*
     * 数据部分！------------------------------------------------------------------------------------
@@ -430,7 +432,7 @@ public class CenterFragment extends Fragment {
     }
 
     //某一个房间在两天之内的情况
-    private void showDialogSomeRoom(int roomNum){
+    private void showDialogSomeRoom(final int roomNum){
         final Dialog dialog = new Dialog(context);
         dialog.setContentView(R.layout.dialog_some_room);
         dialog.setTitle(roomNum + "号");
@@ -438,6 +440,8 @@ public class CenterFragment extends Fragment {
         ListView listViewSomeRoom = (ListView)dialog.findViewById(R.id.listViewDialogSomeRoom);
         TextView textViewResume = (TextView)dialog.findViewById(R.id.textViewRoomResume);
         ListView listViewComments = (ListView)dialog.findViewById(R.id.listViewRoomComments);
+        EditText editTextComment = (EditText)dialog.findViewById(R.id.editTextComment);
+        ImageButton imageButtonSubmitCmt = (ImageButton)dialog.findViewById(R.id.imageButtonSubCmt);
 
         //房态
         List<StateInfo> stateInfoRoom = new ArrayList<StateInfo>();
@@ -451,18 +455,26 @@ public class CenterFragment extends Fragment {
         textViewResume.setText("简介：");
 
         //评论
-        List<Map<String,String>> comments = getComments(roomNum);
+        initComments(roomNum);
         View footerView = LayoutInflater.from(context).inflate(R.layout.item_list_dialog_footer, null);
         ImageButton imageButtonLoadMore = (ImageButton)footerView.findViewById(R.id.imageButtonMore);
         imageButtonLoadMore.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                
+                loadMoreComments(roomNum);
             }
         });
         listViewComments.addFooterView(footerView);
         RoomCommentAdapter roomCommentAdapter = new RoomCommentAdapter(context, R.layout.item_list_dialog_comment, comments);
         listViewComments.setAdapter(roomCommentAdapter);
+
+        //发表评论
+        imageButtonSubmitCmt.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
 
         dialog.show();
     }
