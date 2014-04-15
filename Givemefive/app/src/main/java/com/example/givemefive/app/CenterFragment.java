@@ -6,29 +6,35 @@ package com.example.givemefive.app;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
-import android.widget.ExpandableListAdapter;
-import android.widget.ExpandableListView;
+import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import com.example.givemefive.app.adapters.MainGridViewAdapter;
+import com.example.givemefive.app.adapters.NotificationListAdapter;
+import com.example.givemefive.app.adapters.RoomCommentAdapter;
+import com.example.givemefive.app.adapters.SomeRoomListAdapter;
+import com.example.givemefive.app.adapters.SomeTimeListAdapter;
 import com.example.givemefive.app.capricorn.RayMenu;
 
 public class CenterFragment extends Fragment {
@@ -52,6 +58,7 @@ public class CenterFragment extends Fragment {
     private Button buttonHelp;
     private TextView textViewIntroduction;
     private Button buttonTomorrow;
+    private ImageButton buttonRefresh;
 
     private Spinner spinnerSelectTime;
     private Spinner spinnerSelectRoom;
@@ -68,37 +75,48 @@ public class CenterFragment extends Fragment {
             R.drawable.composer_with };
 
     //通知
+    private TextView textViewUpPullTitle;
+    private ListView listViewNotices;
+    private NotificationListAdapter notificationListAdapter;
+    private List<Map<String, String>> notifications;
+
+    //评论
+    private List<Map<String,String>> comments;
 
     public CenterFragment(Context con, int centerId){
         context = con;
         CENTER_ID = centerId;
         switch (centerId){
             case 0:
-                titleCurrent = context.getString(R.string.title_piano_room);
+                titleCurrent = context.getString(R.string.title_piano_room)+context.getString(R.string.title_end_book);
                 TOTAL_ROOM = 19;
                 TOTAL_TIME = 7;
                 BEGIN_TIME = 15;
                 break;
             case 1:
-                titleCurrent = context.getString(R.string.title_badminton_new);
+                titleCurrent = context.getString(R.string.title_badminton_new)+context.getString(R.string.title_end_book);
                 TOTAL_ROOM = 16;
                 TOTAL_TIME = 12;
                 BEGIN_TIME = 10;
                 break;
             case 2:
-                titleCurrent = context.getString(R.string.title_badminton_old);
+                titleCurrent = context.getString(R.string.title_badminton_old)+context.getString(R.string.title_end_book);
                 TOTAL_ROOM = 5;
                 TOTAL_TIME = 12;
                 BEGIN_TIME = 8;
                 break;
             case 3:
-                titleCurrent = context.getString(R.string.title_table_tennis_new);
+                titleCurrent = context.getString(R.string.title_table_tennis_new)+context.getString(R.string.title_end_book);
                 TOTAL_ROOM = 10;
                 TOTAL_TIME = 3;
                 BEGIN_TIME = 10;
                 break;
         }
     }
+
+    /*
+    onCreateView()----------------------------------------------------------------------------------
+     */
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -124,19 +142,24 @@ public class CenterFragment extends Fragment {
         //情况表
         gridView = (GridView)view.findViewById(R.id.gridViewTable);
         registerForContextMenu(gridView);
-        stateInfos = new ArrayList<StateInfo>();
-        StateInfo stateInfo1 = new StateInfo();
-        for (int i=0;i<(TOTAL_ROOM+1)*(TOTAL_TIME+1);i++){
-            stateInfos.add(stateInfo1);
-        }
+        initStateInfos(0);
         mainGridViewAdapter = new MainGridViewAdapter(context,stateInfos, TOTAL_ROOM, TOTAL_TIME, BEGIN_TIME);//19间琴房，7个时间段
         gridView.setNumColumns(TOTAL_ROOM+1);
         gridView.setHorizontalScrollBarEnabled(true);
         gridView.setAdapter(mainGridViewAdapter);
 
+        //手动刷新
+        buttonRefresh = (ImageButton)view.findViewById(R.id.imageButtonRefresh);
+        buttonRefresh.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                initStateInfos(0);
+            }
+        });
+
         //其它控件
         textViewIntroduction = (TextView)view.findViewById(R.id.textViewIntroduction);
-        textViewIntroduction.setText("横轴表示编号，纵轴表示时间");
+        textViewIntroduction.setText("这里可以放一点文字");
         buttonHelp = (Button)view.findViewById(R.id.buttonHelp);
         buttonHelp.setOnClickListener(new OnClickListener() {
             @Override
@@ -152,7 +175,13 @@ public class CenterFragment extends Fragment {
         buttonTomorrow.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                if (buttonTomorrow.getText().equals("查看明天")){
+                    buttonTomorrow.setText("查看今天");
+                    initStateInfos(1);
+                }else {
+                    buttonTomorrow.setText("查看明天");
+                    initStateInfos(0);
+                }
             }
         });
 
@@ -188,10 +217,31 @@ public class CenterFragment extends Fragment {
         }
 
         //通知
+        textViewUpPullTitle = (TextView)view.findViewById(R.id.textViewUpPanelTitle);
+        textViewUpPullTitle.setText(context.getString(R.string.title_piano_room)+context.getString(R.string.title_end_notice));
+        listViewNotices = (ListView)view.findViewById(R.id.listViewNotices);
 
+        initNotifications();
+
+        View footerView = LayoutInflater.from(context).inflate(R.layout.item_list_dialog_footer, null);
+        ImageButton imageButtonLoadMore = (ImageButton)footerView.findViewById(R.id.imageButtonMore);
+        imageButtonLoadMore.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                loadMoreNotifications();
+            }
+        });
+        listViewNotices.addFooterView(footerView);
+
+        notificationListAdapter = new NotificationListAdapter(context, R.layout.item_list_notification, notifications);
+        listViewNotices.setAdapter(notificationListAdapter);
 
         return view;
     }
+
+    /*
+    onCreateView()----------------------------------------------------------------------------------
+     */
 
     //输入查找
     private void initInputFindListener(){
@@ -228,17 +278,88 @@ public class CenterFragment extends Fragment {
                 if (beginTimeClock==0 && selectRoomNum==0){
                     Toast.makeText(getActivity(),"请选择需要查询的项目",Toast.LENGTH_SHORT).show();
                 }else if(beginTimeClock==0){
-
+                    showDialogSomeRoom(selectRoomNum);//从1开始
                 }else if(selectRoomNum==0){
-
+                    showDialogSomeTime(beginTimeClock);//从BEGIN_TIME开始
                 }else {
-
+                    showDialogBooking(context, stateInfos.get(getPosition(beginTimeClock,selectRoomNum)));
                 }
 
             }
         });
     }
 
+    /*
+    * 数据部分！------------------------------------------------------------------------------------
+    */
+
+    //刷新，对GridView里面的数据的重新加载，生成StateInfos
+    //参数date，0：今天；1：明天
+    private void initStateInfos(int date){
+        stateInfos = new ArrayList<StateInfo>();
+        StateInfo stateInfoNull = null;
+        StateInfo stateInfoTmp = null;
+        for (int i=0;i<=TOTAL_ROOM;i++){//第一行
+            stateInfoNull = new StateInfo();
+            stateInfoNull.setTimeId(0);
+            stateInfoNull.setRoomId(i);
+            stateInfos.add(stateInfoNull);
+        }
+        for (int i=0;i<TOTAL_TIME;i++){//每一行
+            stateInfoNull = new StateInfo();
+            stateInfoNull.setRoomId(0);
+            stateInfoNull.setTimeId(i + BEGIN_TIME);
+            stateInfos.add(stateInfoNull);//第一列
+            for (int j=1;j<=TOTAL_ROOM;j++){
+                stateInfoTmp = new StateInfo();
+                stateInfoTmp.setRoomId(j);
+                stateInfoTmp.setTimeId(i + BEGIN_TIME);
+                stateInfoTmp.setStateId(0);
+                stateInfoTmp.setStateName("空闲");
+                stateInfos.add(stateInfoTmp);
+            }
+        }
+    }
+
+    //初始化通知
+    private void initNotifications(){
+        notifications = new ArrayList<Map<String, String>>();
+        for (int i=0;i<10;i++){
+            Map<String, String> temp = new HashMap<String, String>();
+            temp.put("title","biaoti:"+i);
+            temp.put("time","shijian:"+i);
+            temp.put("type","leixing:"+i);
+            temp.put("content","zhengwen:"+i);
+            notifications.add(temp);
+        }
+    }
+    //加载更多通知
+    private void loadMoreNotifications(){
+
+    }
+
+    //初始化评论
+    //参数，room：房间号
+    private void initComments(int room){
+        comments = new ArrayList<Map<String, String>>();
+        for(int i=0;i<10;i++){
+            Map<String, String> temp = new HashMap<String, String>();
+            temp.put("content","pinglun");
+            temp.put("time","00:00");
+            temp.put("user","wo");
+            temp.put("id",""+i);
+            comments.add(temp);
+        }
+    }
+    //加载更多评论
+    //参数，room：房间号
+    private void loadMoreComments(int room){
+    }
+    /*
+    * 数据部分！------------------------------------------------------------------------------------
+    */
+
+    //spinner显示的内容
     private String[] getSpinnerStringsTime(){
         String[] strings = new String[TOTAL_TIME+1];
         strings[0] = "全部时间";
@@ -247,7 +368,6 @@ public class CenterFragment extends Fragment {
         }
         return strings;
     }
-
     private String[] getSpinnerStringsRoom(){
         String[] strings = new String[TOTAL_ROOM+1];
         strings[0] = "全部场地";
@@ -255,6 +375,108 @@ public class CenterFragment extends Fragment {
             strings[i] = String.valueOf(i);
         }
         return strings;
+    }
+
+    //工具类
+    public int getPosition(int time, int room){
+        int position = (time-BEGIN_TIME+1)*(TOTAL_ROOM+1)+room;
+        return position;
+    }
+
+    //Dialog
+    //针对某时间某场地的预订
+    private void showDialogBooking(Context context, StateInfo stateInfo){
+        final Dialog dialog = new Dialog(context);
+        dialog.setContentView(R.layout.dialog_book_info);
+        dialog.setTitle(stateInfo.getRoomId() + "号——开始时间:" + stateInfo.getTimeId() + ":00");
+
+        TextView textView = (TextView)dialog.findViewById(R.id.textViewState);
+        textView.setText("状态：" + stateInfo.getStateName());
+
+        Button buttonBook = (Button)dialog.findViewById(R.id.buttonBookNow);
+        Button buttonComment = (Button)dialog.findViewById(R.id.buttonViewComment);
+        buttonBook.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.hide();
+            }
+        });
+        buttonComment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.hide();
+            }
+        });
+
+        LinearLayout linearLayout = (LinearLayout)dialog.findViewById(R.id.layout_only_admin);
+
+        dialog.show();
+    }
+
+    //某一个时间内所有房间的情况
+    private void showDialogSomeTime(int beginTime){
+        final Dialog dialog = new Dialog(context);
+        dialog.setContentView(R.layout.dialog_some_time);
+        dialog.setTitle("时间:" + beginTime + ":00~"+String.valueOf(beginTime+1)+":00");
+
+        ListView listViewSomeTime = (ListView)dialog.findViewById(R.id.listViewDialogSomeTime);
+
+        List<StateInfo> stateInfoSomeTime = new ArrayList<StateInfo>();
+        for (int i = 1;i<=TOTAL_ROOM;i++){
+            stateInfoSomeTime.add(stateInfos.get(getPosition(beginTime,i)));
+        }
+        SomeTimeListAdapter someTimeListAdapter = new SomeTimeListAdapter(context, R.layout.item_list_dialog_some_time, stateInfoSomeTime);
+        listViewSomeTime.setAdapter(someTimeListAdapter);
+
+        dialog.show();
+    }
+
+    //某一个房间在两天之内的情况
+    private void showDialogSomeRoom(final int roomNum){
+        final Dialog dialog = new Dialog(context);
+        dialog.setContentView(R.layout.dialog_some_room);
+        dialog.setTitle(roomNum + "号");
+
+        ListView listViewSomeRoom = (ListView)dialog.findViewById(R.id.listViewDialogSomeRoom);
+        TextView textViewResume = (TextView)dialog.findViewById(R.id.textViewRoomResume);
+        ListView listViewComments = (ListView)dialog.findViewById(R.id.listViewRoomComments);
+        EditText editTextComment = (EditText)dialog.findViewById(R.id.editTextComment);
+        ImageButton imageButtonSubmitCmt = (ImageButton)dialog.findViewById(R.id.imageButtonSubCmt);
+
+        //房态
+        List<StateInfo> stateInfoRoom = new ArrayList<StateInfo>();
+        for (int i=BEGIN_TIME;i<BEGIN_TIME+TOTAL_TIME;i++){
+            stateInfoRoom.add(stateInfos.get(getPosition(i, roomNum)));
+        }
+        SomeRoomListAdapter someRoomListAdapter = new SomeRoomListAdapter(context, R.layout.item_list_dialog_some_room, stateInfoRoom);
+        listViewSomeRoom.setAdapter(someRoomListAdapter);
+
+        //简介
+        textViewResume.setText("简介：");
+
+        //评论
+        initComments(roomNum);
+        View footerView = LayoutInflater.from(context).inflate(R.layout.item_list_dialog_footer, null);
+        ImageButton imageButtonLoadMore = (ImageButton)footerView.findViewById(R.id.imageButtonMore);
+        imageButtonLoadMore.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                loadMoreComments(roomNum);
+            }
+        });
+        listViewComments.addFooterView(footerView);
+        RoomCommentAdapter roomCommentAdapter = new RoomCommentAdapter(context, R.layout.item_list_dialog_comment, comments);
+        listViewComments.setAdapter(roomCommentAdapter);
+
+        //发表评论
+        imageButtonSubmitCmt.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        dialog.show();
     }
 
 }

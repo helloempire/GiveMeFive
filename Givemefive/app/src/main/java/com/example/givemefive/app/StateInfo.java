@@ -25,14 +25,6 @@ public class StateInfo {
         roomId = ri;
     }
 
-    private String timeName;
-    public String getTimeName(){
-        return timeName;
-    }
-    public void setTimeName(String tn){
-        timeName = tn;
-    }
-
     private int stateId;
     public int getState(){
         return stateId;
