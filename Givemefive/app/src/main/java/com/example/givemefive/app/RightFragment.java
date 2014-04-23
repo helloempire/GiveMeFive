@@ -219,6 +219,13 @@ public class RightFragment extends Fragment {
             String thisUsername = theUsername.getText().toString();
             String thisPassword = thePassword.getText().toString();
 
+            if (thisUsername.equals("") || thisPassword.equals("")){
+                Toast.makeText(this.getActivity(),
+                        "请填写完整",
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             //Assign the hash to the password
             //thisPassword = md5(thisPassword);
 

@@ -38,6 +38,23 @@
             android:gravity="left"
             android:selectAllOnFocus="true"
             android:lines="1"
+            android:id="@+id/nStuID"
+            android:hint="输入学号"
+            android:inputType="text"
+            android:layout_gravity="fill_horizontal"
+            android:layout_width="match_parent">
+        </EditText>
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <EditText
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:selectAllOnFocus="true"
+            android:lines="1"
             android:id="@+id/nPassword"
             android:hint="输入密码"
             android:inputType="textPassword"
@@ -62,6 +79,8 @@
             android:layout_width="match_parent">
         </EditText>
     </LinearLayout>
+
+
 
     <LinearLayout
         android:layout_height="wrap_content"

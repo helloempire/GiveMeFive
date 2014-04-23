@@ -7,8 +7,8 @@
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="modules">
           <set>
-            <option value="F:\softwareEngineering\GiveMeFive\Givemefive" />
-            <option value="F:\softwareEngineering\GiveMeFive\Givemefive\app" />
+            <option value="C:\Users\Administrator\Documents\GiveMeFive\Givemefive" />
+            <option value="C:\Users\Administrator\Documents\GiveMeFive\Givemefive\app" />
           </set>
         </option>
       </GradleProjectSettings>
