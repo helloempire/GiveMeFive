@@ -2,14 +2,14 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:layout_width="match_parent"
+    android:layout_width="200sp"
     android:layout_height="match_parent">
 
     <TextView
-        android:layout_width="fill_parent"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="用户登录"
+        android:text="用 户 登 录"
         android:id="@+id/Label"
         android:textSize="20dip"
         />

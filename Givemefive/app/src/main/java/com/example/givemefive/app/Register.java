@@ -34,7 +34,7 @@ public class Register extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 	        
-        SharedPreferences settings = getSharedPreferences(login.MY_PREFS, 0);
+        SharedPreferences settings = getSharedPreferences(RightFragment.MY_PREFS, 0);
         Editor editor = settings.edit();
         editor.putLong("uid", 0);
         editor.commit();
@@ -158,7 +158,7 @@ public class Register extends Activity {
 	    }
 	 
 	 private void saveLoggedInUId(long id, String username, String password) {
-			SharedPreferences settings = getSharedPreferences(login.MY_PREFS, 0);
+			SharedPreferences settings = getSharedPreferences(RightFragment.MY_PREFS, 0);
 			Editor editor = settings.edit();
 			editor.putLong("uid", id);
 			editor.putString("username", username);
