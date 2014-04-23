@@ -41,7 +41,8 @@ public class Register extends Activity {
 	private EditText newPassword;
 	private EditText newConfiPass;
     private EditText newStudentID;
-	private Button registerButton;
+    private EditText newEmail;
+    private Button registerButton;
     private Button backButton;
 
 
@@ -68,6 +69,7 @@ public class Register extends Activity {
 		 	newPassword = (EditText) findViewById(R.id.nPassword);
 		 	newConfiPass = (EditText) findViewById(R.id.nConfiPass);
             newStudentID = (EditText) findViewById(R.id.nStuID);
+            newEmail = (EditText) findViewById(R.id.nEmail);
 		 	registerButton = (Button) findViewById(R.id.nRegister);
             backButton = (Button) findViewById(R.id.Back);
 
@@ -98,9 +100,10 @@ public class Register extends Activity {
 	    	String password = newPassword.getText().toString();
 	    	String confirmpassword = newConfiPass.getText().toString();
             String stuID = newStudentID.getText().toString();
+            String email = newEmail.getText().toString();
 	    	
 	    	//Check if all fields have been completed.
-	    	if (username.equals("") || password.equals("") || confirmpassword.equals("") || stuID.equals("")){
+	    	if (username.equals("") || password.equals("") || confirmpassword.equals("") || stuID.equals("") || email.equals("")){
 	    		Toast.makeText(getApplicationContext(), 
 	    				"请完成表格后确认",
 				          Toast.LENGTH_SHORT).show();
@@ -117,6 +120,10 @@ public class Register extends Activity {
 	    		return;
 	    	}
 
+//            Toast.makeText(this.getApplicationContext(),
+//                    username + password + stuID,
+//                    Toast.LENGTH_SHORT).show();
+
             httpClient = new DefaultHttpClient();
             try{
                 //httpPost = new  HttpPost(url + "/index.php/user/appgenerallogin");
@@ -128,14 +135,19 @@ public class Register extends Activity {
                 //创建一个用户，用于向服务端发送数据时，存放的实体
                 NameValuePair nameValuePair1 = new BasicNameValuePair("username",username);
                 NameValuePair nameValuePair2 = new BasicNameValuePair("password",password);
-                NameValuePair nameValuePair3 = new BasicNameValuePair("password",stuID);
+                NameValuePair nameValuePair3 = new BasicNameValuePair("studentnumber",stuID);
+                //NameValuePair nameValuePair4 = new BasicNameValuePair("email",email);
                 List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
                 nameValuePairs.add(nameValuePair1);
                 nameValuePairs.add(nameValuePair2);
                 nameValuePairs.add(nameValuePair3);
+                //nameValuePairs.add(nameValuePair4);
 
-                Log.i("testdatabase", "sendusername = " + nameValuePair1);
-                Log.i("testdatabase","sendpassword = " + nameValuePair2);
+
+                Toast.makeText(this.getApplicationContext(),
+                        nameValuePairs.toString(),
+                        Toast.LENGTH_SHORT).show();
+
 
                 HttpEntity requesHttpEntity = new UrlEncodedFormEntity(nameValuePairs);
                 httpPost.setEntity(requesHttpEntity);
