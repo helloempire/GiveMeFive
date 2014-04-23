@@ -58,12 +58,15 @@ public class RightFragment extends Fragment {
     private Button clearButton;
     private Button exitButton;
     private Button buttonLogout;
+    private Button btController;
     private CheckBox rememberDetails;
     private RightFragment rightFragment;
+    private String UserType;
 
-    public RightFragment(Context con, int isLogin){
+    public RightFragment(Context con, int isLogin,String usertype){
         context = con;
         ISLogin = isLogin;
+        UserType = usertype;
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -92,6 +95,11 @@ public class RightFragment extends Fragment {
 
             buttonSetting = (Button) view.findViewById(R.id.buttonSetting);
             buttonLogout  = (Button) view.findViewById(R.id.logout);
+
+            if(!UserType.equals("0")){
+                btController = (Button) view.findViewById(R.id.buttonController);
+                btController.setVisibility(0);
+            }
 
 
 
@@ -170,7 +178,7 @@ public class RightFragment extends Fragment {
     {
         FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.center_frame, new CenterFragment(getActivity(), 0));
-        fragmentTransaction.replace(R.id.right_frame, new RightFragment(getActivity(), 0));
+        fragmentTransaction.replace(R.id.right_frame, new RightFragment(getActivity(), 0,"0"));
         fragmentTransaction.commit();
         ((MainActivity) getActivity()).showLeft();
     }
@@ -195,7 +203,7 @@ public class RightFragment extends Fragment {
     private void LogMeIn(View v) {
         httpClient = new DefaultHttpClient();
         try {
-            httpPost = new HttpPost(url + "/index.php/login/appgenerallogin");
+            httpPost = new HttpPost(url + "/index.php/user/appgenerallogin");
             //Get the username and password
             String thisUsername = theUsername.getText().toString();
             String thisPassword = thePassword.getText().toString();
@@ -237,10 +245,13 @@ public class RightFragment extends Fragment {
                 String status = null;
                 String response = null;
                 String test = null;
+                String usertype = null;
 
                 status = datas.getString("status");
                 response = datas.getString("response");
+                usertype = datas.getString("usertype");
                 test = "login test";
+
 
 
                 Toast.makeText(this.getActivity().getApplicationContext(),
@@ -256,7 +267,7 @@ public class RightFragment extends Fragment {
                     saveLoggedInUId(1, thisUsername, thisPassword);
 
                     FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
-                    fragmentTransaction.replace(R.id.right_frame, new RightFragment(getActivity(), 1));
+                    fragmentTransaction.replace(R.id.right_frame, new RightFragment(getActivity(), 1,usertype));
                     fragmentTransaction.commit();
                 }
                 else{

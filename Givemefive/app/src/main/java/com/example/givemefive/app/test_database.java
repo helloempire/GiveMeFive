@@ -77,7 +77,8 @@ public class test_database extends Activity {
     public void login(){
         httpClient = new DefaultHttpClient();
         try{
-            httpPost = new HttpPost(url + "/index.php/login/create_memeber");
+            //httpPost = new  HttpPost(url + "/index.php/user/appgenerallogin");
+            httpPost = new HttpPost(url + "/index.php/user/create_memeber");
 
             username = etusername.getText().toString();
             password = etpassword.getText().toString();
@@ -120,8 +121,8 @@ public class test_database extends Activity {
 
                 status = datas.getString("status");
                 response = datas.getString("response");
-                test = "create member test";
-
+                //test = "create member test";
+                test = "login test";
                 Toast.makeText(this.getApplicationContext(),
                         response,
                         Toast.LENGTH_SHORT).show();

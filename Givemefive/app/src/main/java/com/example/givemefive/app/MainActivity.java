@@ -27,7 +27,7 @@ public class MainActivity extends FragmentActivity {
         slidingMenu.setCenterView(getLayoutInflater().inflate(R.layout.center_frame, null));
 
         leftFragment = new LeftFragment(MainActivity.this);
-        rightFragment = new RightFragment(MainActivity.this,0);
+        rightFragment = new RightFragment(MainActivity.this,0,"0");
         centerFragment = new CenterFragment(MainActivity.this, 0);
 
         fragmentTransaction = this.getSupportFragmentManager().beginTransaction();
