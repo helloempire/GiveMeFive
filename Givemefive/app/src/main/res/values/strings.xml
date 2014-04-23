@@ -12,4 +12,13 @@
     <string name="title_activity_admin">AdminActivity</string>
     <string name="hello_world">Hello world!</string>
 
+    <string name="admin_title_maxday">可以预定的最大天数</string>
+    <string name="admin_title_resume">简介</string>
+    <string name="admin_title_notice">公告：</string>
+    <string name="admin_button_add_notice">新增公告</string>
+
+    <string name="save">保存</string>
+    <string name="undo">取消</string>
+    <string name="delete">删除</string>
+
 </resources>

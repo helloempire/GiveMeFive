@@ -99,7 +99,7 @@ public class RightFragment extends Fragment {
             buttonLogout  = (Button) view.findViewById(R.id.logout);
             btController = (Button) view.findViewById(R.id.buttonController);
 
-            if(UserType.equals("1")){
+            if(!UserType.equals("0")){
                 //是管理员
                 btController.setOnClickListener(new View.OnClickListener() {
                     @Override
