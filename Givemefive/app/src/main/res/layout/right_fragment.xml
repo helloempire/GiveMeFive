@@ -189,8 +189,7 @@
 		android:id="@+id/buttonController"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:text="管理者"
-		android:visibility="gone"/>
+		android:text="管理者"/>
 
 
 </LinearLayout>

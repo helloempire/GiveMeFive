@@ -20,6 +20,8 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.givemefive.app.admin.AdminActivity;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -95,10 +97,19 @@ public class RightFragment extends Fragment {
 
             buttonSetting = (Button) view.findViewById(R.id.buttonSetting);
             buttonLogout  = (Button) view.findViewById(R.id.logout);
+            btController = (Button) view.findViewById(R.id.buttonController);
 
-            if(!UserType.equals("0")){
-                btController = (Button) view.findViewById(R.id.buttonController);
-                btController.setVisibility(0);
+            if(UserType.equals("1")){
+                //是管理员
+                btController.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(getActivity(), AdminActivity.class);
+                        startActivity(intent);
+                    }
+                });
+            }else{
+                btController.setVisibility(View.GONE);
             }
 
 
