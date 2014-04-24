@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.givemefive.app.R;
 import com.example.givemefive.app.adapters.NotificationListAdapter;
@@ -32,6 +33,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -71,14 +73,69 @@ public class AdminActivity extends Activity {
         buttonSave1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+                pairs.add(new BasicNameValuePair("maxday",editTextMaxDay.getText().toString()));
+                pairs.add(new BasicNameValuePair("rule",editTextRule.getText().toString()));
+                pairs.add(new BasicNameValuePair("introduction",editTextResume.getText().toString()));
+                pairs.add(new BasicNameValuePair("id","1"));
+                PostGetJson postGetJson = new PostGetJson(getString(R.string.postStadiumChangeInfo),pairs);
+                String json = "";
+                JSONObject jsonObject = null;
+                try {
+                    json = postGetJson.getJsonDate();
+                    jsonObject = new JSONObject(json);
+                    Toast.makeText(AdminActivity.this,jsonObject.getString("response"),Toast.LENGTH_SHORT).show();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
         buttonAddNotice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                final Dialog dialog = new Dialog(AdminActivity.this);
+                dialog.setContentView(R.layout.dialog_admin_modify_notice);
+                dialog.setTitle("新建公告");
 
+                final EditText editTextTitle = (EditText)dialog.findViewById(R.id.editTextModifyNoticeTitle);
+                final EditText editTextContent = (EditText)dialog.findViewById(R.id.editTextModifyNoticeContent);
+                Button buttonSave = (Button)dialog.findViewById(R.id.buttonSaveNotice);
+                Button buttonDelete = (Button)dialog.findViewById(R.id.buttonDeleteNotice);
+
+                buttonSave.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+                        pairs.add(new BasicNameValuePair("site_id","1"));
+                        pairs.add(new BasicNameValuePair("title",editTextTitle.getText().toString()));
+                        pairs.add(new BasicNameValuePair("content",editTextContent.getText().toString()));
+                        pairs.add(new BasicNameValuePair("time",getCurrentTime()));
+                        PostGetJson postGetJson = new PostGetJson(getString(R.string.postStadiumAddNotice),pairs);
+                        String json = "";
+                        JSONObject jsonObject = null;
+                        try {
+                            json = postGetJson.getJsonDate();
+                            jsonObject = new JSONObject(json);
+                            Toast.makeText(AdminActivity.this,jsonObject.getString("response"),Toast.LENGTH_SHORT).show();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        dialog.hide();
+                    }
+                });
+                buttonDelete.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialog.hide();
+                    }
+                });
+
+                dialog.show();
             }
         });
 
@@ -94,8 +151,8 @@ public class AdminActivity extends Activity {
                 dialog.setContentView(R.layout.dialog_admin_modify_notice);
                 dialog.setTitle("修改公告");
 
-                EditText editTextTitle = (EditText)dialog.findViewById(R.id.editTextModifyNoticeTitle);
-                EditText editTextContent = (EditText)dialog.findViewById(R.id.editTextModifyNoticeContent);
+                final EditText editTextTitle = (EditText)dialog.findViewById(R.id.editTextModifyNoticeTitle);
+                final EditText editTextContent = (EditText)dialog.findViewById(R.id.editTextModifyNoticeContent);
                 Button buttonSave = (Button)dialog.findViewById(R.id.buttonSaveNotice);
                 Button buttonDelete = (Button)dialog.findViewById(R.id.buttonDeleteNotice);
 
@@ -104,13 +161,44 @@ public class AdminActivity extends Activity {
                 buttonSave.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-
+                        List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+                        pairs.add(new BasicNameValuePair("site_id","1"));
+                        pairs.add(new BasicNameValuePair("title",editTextTitle.getText().toString()));
+                        pairs.add(new BasicNameValuePair("content",editTextContent.getText().toString()));
+                        pairs.add(new BasicNameValuePair("time",getCurrentTime()));
+                        PostGetJson postGetJson = new PostGetJson(getString(R.string.postStadiumChangeNotice),pairs);
+                        String json = "";
+                        JSONObject jsonObject = null;
+                        try {
+                            json = postGetJson.getJsonDate();
+                            jsonObject = new JSONObject(json);
+                            Toast.makeText(AdminActivity.this,jsonObject.getString("response"),Toast.LENGTH_SHORT).show();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        dialog.hide();
                     }
                 });
                 buttonDelete.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-
+                        List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+                        pairs.add(new BasicNameValuePair("id","1"));
+                        PostGetJson postGetJson = new PostGetJson(getString(R.string.postStadiumDeleteNotice),pairs);
+                        String json = "";
+                        JSONObject jsonObject = null;
+                        try {
+                            json = postGetJson.getJsonDate();
+                            jsonObject = new JSONObject(json);
+                            Toast.makeText(AdminActivity.this,jsonObject.getString("response"),Toast.LENGTH_SHORT).show();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        dialog.hide();
                     }
                 });
 
@@ -124,7 +212,7 @@ public class AdminActivity extends Activity {
      */
     //初始化基本信息
     private void initBaseInfo(){
-        HttpGet httpGet = new HttpGet(getString(R.string.getStadiumBaseInfo));
+        HttpGet httpGet = new HttpGet(getString(R.string.getStadiumBaseInfo)+"1");
         HttpClient httpClient = new DefaultHttpClient();
         HttpResponse httpResponse = null;
         String json = "";
@@ -175,5 +263,12 @@ public class AdminActivity extends Activity {
                 e.printStackTrace();
             }
         }
+    }
+
+    //工具
+    public String getCurrentTime(){
+        SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        String date = sDateFormat.format(new java.util.Date());
+        return date;
     }
 }
