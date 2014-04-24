@@ -99,7 +99,7 @@ public class RightFragment extends Fragment {
             buttonLogout  = (Button) view.findViewById(R.id.logout);
             btController = (Button) view.findViewById(R.id.buttonController);
 
-            if(UserType.equals("1")){
+            if(!UserType.equals("0")){
                 //是管理员
                 btController.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -218,6 +218,13 @@ public class RightFragment extends Fragment {
             //Get the username and password
             String thisUsername = theUsername.getText().toString();
             String thisPassword = thePassword.getText().toString();
+
+            if (thisUsername.equals("") || thisPassword.equals("")){
+                Toast.makeText(this.getActivity(),
+                        "请填写完整",
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
 
             //Assign the hash to the password
             //thisPassword = md5(thisPassword);
