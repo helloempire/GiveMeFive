@@ -52,6 +52,7 @@ public class AdminActivity extends Activity {
     private String resume="";
     private String rule="";
     private List<Map<String, String>> notificationList;
+    private NotificationListAdapter notificationListAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,6 +126,7 @@ public class AdminActivity extends Activity {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+                        initListView();
                         dialog.hide();
                     }
                 });
@@ -140,9 +142,7 @@ public class AdminActivity extends Activity {
         });
 
         //公告列表
-        initNotificationString();
-        NotificationListAdapter notificationListAdapter = new NotificationListAdapter(AdminActivity.this,R.layout.item_list_notification,notificationList);
-        listViewNotifications.setAdapter(notificationListAdapter);
+        initListView();
 
         listViewNotifications.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -158,14 +158,16 @@ public class AdminActivity extends Activity {
 
                 editTextTitle.setText(notificationList.get(i).get("title"));
                 editTextContent.setText(notificationList.get(i).get("content"));
+
+                final int ii = i;
                 buttonSave.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         List<NameValuePair> pairs = new ArrayList<NameValuePair>();
-                        pairs.add(new BasicNameValuePair("site_id","1"));
-                        pairs.add(new BasicNameValuePair("title",editTextTitle.getText().toString()));
                         pairs.add(new BasicNameValuePair("content",editTextContent.getText().toString()));
+                        pairs.add(new BasicNameValuePair("title",editTextTitle.getText().toString()));
                         pairs.add(new BasicNameValuePair("time",getCurrentTime()));
+                        pairs.add(new BasicNameValuePair("id",notificationList.get(ii).get("id")));Log.i("ljj","id"+notificationList.get(ii).get("id"));
                         PostGetJson postGetJson = new PostGetJson(getString(R.string.postStadiumChangeNotice),pairs);
                         String json = "";
                         JSONObject jsonObject = null;
@@ -178,6 +180,7 @@ public class AdminActivity extends Activity {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+                        initListView();
                         dialog.hide();
                     }
                 });
@@ -185,7 +188,7 @@ public class AdminActivity extends Activity {
                     @Override
                     public void onClick(View view) {
                         List<NameValuePair> pairs = new ArrayList<NameValuePair>();
-                        pairs.add(new BasicNameValuePair("id","1"));
+                        pairs.add(new BasicNameValuePair("id",notificationList.get(ii).get("id")));
                         PostGetJson postGetJson = new PostGetJson(getString(R.string.postStadiumDeleteNotice),pairs);
                         String json = "";
                         JSONObject jsonObject = null;
@@ -198,6 +201,7 @@ public class AdminActivity extends Activity {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+                        initListView();
                         dialog.hide();
                     }
                 });
@@ -205,6 +209,13 @@ public class AdminActivity extends Activity {
                 dialog.show();
             }
         });
+    }
+
+    //初始化
+    private void initListView(){
+        initNotificationString();
+        notificationListAdapter = new NotificationListAdapter(AdminActivity.this,R.layout.item_list_notification,notificationList);
+        listViewNotifications.setAdapter(notificationListAdapter);
     }
 
     /*
@@ -258,6 +269,7 @@ public class AdminActivity extends Activity {
                 temp.put("title",jsonObject.getString("title"));
                 temp.put("time",jsonObject.getString("time"));
                 temp.put("content",jsonObject.getString("content"));
+                temp.put("id",jsonObject.getString("id"));
                 notificationList.add(temp);
             } catch (JSONException e) {
                 e.printStackTrace();
