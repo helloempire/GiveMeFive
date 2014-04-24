@@ -25,6 +25,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,6 +37,13 @@ import com.example.givemefive.app.adapters.RoomCommentAdapter;
 import com.example.givemefive.app.adapters.SomeRoomListAdapter;
 import com.example.givemefive.app.adapters.SomeTimeListAdapter;
 import com.example.givemefive.app.capricorn.RayMenu;
+import com.example.givemefive.app.tools.PostGetJson;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class CenterFragment extends Fragment {
 
@@ -324,13 +332,34 @@ public class CenterFragment extends Fragment {
     //初始化通知
     private void initNotifications(){
         notifications = new ArrayList<Map<String, String>>();
-        for (int i=0;i<10;i++){
-            Map<String, String> temp = new HashMap<String, String>();
-            temp.put("title","biaoti:"+i);
-            temp.put("time","shijian:"+i);
-            temp.put("type","leixing:"+i);
-            temp.put("content","zhengwen:"+i);
-            notifications.add(temp);
+        Map<String, String> temp;
+        List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+        pairs.add(new BasicNameValuePair("id","1"));
+        PostGetJson postGetJson = new PostGetJson(getString(R.string.postStadiumNotices),pairs);
+        String json = "";
+        JSONArray jsonArray = null;
+        try {
+            json = postGetJson.getJsonDate();
+            jsonArray = new JSONArray(json);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        if(json.equals("")||json.equals("{}")||jsonArray==null){
+            return;
+        }
+        for(int i=0;i<jsonArray.length();i++){
+            temp = new HashMap<String, String>();
+            try {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                temp.put("title",jsonObject.getString("title"));
+                temp.put("time",jsonObject.getString("time"));
+                temp.put("content",jsonObject.getString("content"));
+                notifications.add(temp);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
     //加载更多通知

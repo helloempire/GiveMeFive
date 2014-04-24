@@ -18,7 +18,20 @@ import android.widget.TextView;
 
 import com.example.givemefive.app.R;
 import com.example.givemefive.app.adapters.NotificationListAdapter;
+import com.example.givemefive.app.tools.PostGetJson;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,12 +41,14 @@ public class AdminActivity extends Activity {
 
     private EditText editTextMaxDay;
     private EditText editTextResume;
+    private EditText editTextRule;
     private Button buttonSave1;
     private Button buttonAddNotice;
     private ListView listViewNotifications;
 
-    private String maxDay;
-    private String resume;
+    private String maxDay="";
+    private String resume="";
+    private String rule="";
     private List<Map<String, String>> notificationList;
 
     @Override
@@ -43,9 +58,15 @@ public class AdminActivity extends Activity {
 
         editTextMaxDay = (EditText)findViewById(R.id.editTextMaxDay);
         editTextResume = (EditText)findViewById(R.id.editTextResume);
+        editTextRule = (EditText)findViewById(R.id.editTextRule);
         buttonSave1 = (Button)findViewById(R.id.buttonSave1);
         buttonAddNotice = (Button)findViewById(R.id.buttonAddNotice);
         listViewNotifications = (ListView)findViewById(R.id.listViewAdminNotice);
+
+        initBaseInfo();
+        editTextMaxDay.setText(maxDay);
+        editTextResume.setText(resume);
+        editTextRule.setText(rule);
 
         buttonSave1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,16 +119,61 @@ public class AdminActivity extends Activity {
         });
     }
 
+    /*
+    数据部分
+     */
+    //初始化基本信息
+    private void initBaseInfo(){
+        HttpGet httpGet = new HttpGet(getString(R.string.getStadiumBaseInfo));
+        HttpClient httpClient = new DefaultHttpClient();
+        HttpResponse httpResponse = null;
+        String json = "";
+        JSONObject jsonObject = null;
+        try {
+            httpResponse = httpClient.execute(httpGet);
+            json = EntityUtils.toString(httpResponse.getEntity());
+            jsonObject = new JSONObject(json);
+            maxDay = jsonObject.getString("maxday");
+            resume = jsonObject.getString("introduction");
+            rule = jsonObject.getString("rule");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //初始化通知信息
     private void initNotificationString(){
         notificationList = new ArrayList<Map<String, String>>();
         Map<String, String> temp;
-        for(int i=0;i<10;i++){
+        List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+        pairs.add(new BasicNameValuePair("id","1"));
+        PostGetJson postGetJson = new PostGetJson(getString(R.string.postStadiumNotices),pairs);
+        String json = "";
+        JSONArray jsonArray = null;
+        try {
+            json = postGetJson.getJsonDate();
+            jsonArray = new JSONArray(json);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        if(json.equals("")||json.equals("{}")||jsonArray==null){
+            return;
+        }
+        for(int i=0;i<jsonArray.length();i++){
             temp = new HashMap<String, String>();
-            temp.put("title","biaoti:"+i);
-            temp.put("time","shijian:"+i);
-            temp.put("type","leixing:"+i);
-            temp.put("content","zhengwen:"+i);
-            notificationList.add(temp);
+            try {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                temp.put("title",jsonObject.getString("title"));
+                temp.put("time",jsonObject.getString("time"));
+                temp.put("content",jsonObject.getString("content"));
+                notificationList.add(temp);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
