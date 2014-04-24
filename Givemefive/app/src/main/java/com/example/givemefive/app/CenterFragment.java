@@ -8,6 +8,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -39,8 +40,13 @@ import com.example.givemefive.app.adapters.SomeTimeListAdapter;
 import com.example.givemefive.app.capricorn.RayMenu;
 import com.example.givemefive.app.tools.PostGetJson;
 
+import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -371,13 +377,28 @@ public class CenterFragment extends Fragment {
     //参数，room：房间号
     private void initComments(int room){
         comments = new ArrayList<Map<String, String>>();
-        for(int i=0;i<10;i++){
-            Map<String, String> temp = new HashMap<String, String>();
-            temp.put("content","pinglun");
-            temp.put("time","00:00");
-            temp.put("user","wo");
-            temp.put("id",""+i);
-            comments.add(temp);
+        HttpGet httpGet = new HttpGet(getString(R.string.getComments)+"?site_id="+"1"+"&room_id="+String.valueOf(room));//暂时只是1说明是琴房的数据
+        HttpClient httpClient = new DefaultHttpClient();
+        HttpResponse httpResponse = null;
+        String json = "";
+        JSONArray jsonArray = null;
+        try {
+            httpResponse = httpClient.execute(httpGet);
+            json = EntityUtils.toString(httpResponse.getEntity());
+            jsonArray = new JSONArray(json);
+            for(int i=0;i<jsonArray.length();i++){
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                Map<String, String> temp = new HashMap<String, String>();
+                temp.put("content",jsonObject.getString("content"));
+                temp.put("time",jsonObject.getString("time"));
+                temp.put("user",jsonObject.getString("user_id"));
+                temp.put("id",jsonObject.getString("id"));
+                comments.add(temp);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
     //加载更多评论

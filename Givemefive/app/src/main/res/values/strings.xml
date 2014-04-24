@@ -29,5 +29,6 @@
     <string name="postStadiumAddNotice">http://givemefive.dongyueweb.com/index.php/place/add_notice</string>
     <string name="postStadiumChangeNotice">http://givemefive.dongyueweb.com/index.php/place/change_notice</string>
     <string name="postStadiumDeleteNotice">http://givemefive.dongyueweb.com/index.php/place/delete_notice</string>
+    <string name="getComments">http://givemefive.dongyueweb.com/index.php/comment/getComment</string>
 
 </resources>
