@@ -4,10 +4,13 @@ package com.example.givemefive.app;
  * Created by cyy on 14-3-15.
  */
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -25,7 +28,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +41,21 @@ import com.example.givemefive.app.adapters.NotificationListAdapter;
 import com.example.givemefive.app.adapters.RoomCommentAdapter;
 import com.example.givemefive.app.adapters.SomeRoomListAdapter;
 import com.example.givemefive.app.adapters.SomeTimeListAdapter;
+import com.example.givemefive.app.admin.AdminActivity;
 import com.example.givemefive.app.capricorn.RayMenu;
+import com.example.givemefive.app.timessquare.CalendarPickerView;
+import com.example.givemefive.app.tools.PostGetJson;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class CenterFragment extends Fragment {
 
@@ -57,7 +77,7 @@ public class CenterFragment extends Fragment {
 
     private Button buttonHelp;
     private TextView textViewIntroduction;
-    private Button buttonTomorrow;
+    private Button buttonDatePicker;
     private ImageButton buttonRefresh;
 
     private Spinner spinnerSelectTime;
@@ -79,9 +99,17 @@ public class CenterFragment extends Fragment {
     private ListView listViewNotices;
     private NotificationListAdapter notificationListAdapter;
     private List<Map<String, String>> notifications;
+    private int noticeOffset = 0;
 
     //评论
     private List<Map<String,String>> comments;
+    private int commentOffset = 0;
+    private RoomCommentAdapter roomCommentAdapter;
+
+    //时间选择器
+    private CalendarPickerView calendarPickerView;
+    private Date pickedDate;
+    private Date todayDate;
 
     public CenterFragment(Context con, int centerId){
         context = con;
@@ -112,6 +140,8 @@ public class CenterFragment extends Fragment {
                 BEGIN_TIME = 10;
                 break;
         }
+        todayDate = Calendar.getInstance().getTime();
+        pickedDate = Calendar.getInstance().getTime();
     }
 
     /*
@@ -142,7 +172,7 @@ public class CenterFragment extends Fragment {
         //情况表
         gridView = (GridView)view.findViewById(R.id.gridViewTable);
         registerForContextMenu(gridView);
-        initStateInfos(0);
+        initStateInfos(todayDate);
         mainGridViewAdapter = new MainGridViewAdapter(context,stateInfos, TOTAL_ROOM, TOTAL_TIME, BEGIN_TIME);//19间琴房，7个时间段
         gridView.setNumColumns(TOTAL_ROOM+1);
         gridView.setHorizontalScrollBarEnabled(true);
@@ -153,7 +183,8 @@ public class CenterFragment extends Fragment {
         buttonRefresh.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                initStateInfos(0);
+                initStateInfos(todayDate);
+                mainGridViewAdapter.notifyDataSetChanged();
             }
         });
 
@@ -170,18 +201,43 @@ public class CenterFragment extends Fragment {
             }
         });
 
-        //查看明天的情况
-        buttonTomorrow = (Button)view.findViewById(R.id.buttonTomorrow);
-        buttonTomorrow.setOnClickListener(new OnClickListener() {
+        //查看其它日期的情况
+        buttonDatePicker = (Button)view.findViewById(R.id.buttonDatePicker);
+        buttonDatePicker.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (buttonTomorrow.getText().equals("查看明天")){
-                    buttonTomorrow.setText("查看今天");
-                    initStateInfos(1);
-                }else {
-                    buttonTomorrow.setText("查看明天");
-                    initStateInfos(0);
-                }
+                final Calendar nextYear = Calendar.getInstance();
+                nextYear.add(Calendar.YEAR, 1);
+                final Calendar lastYear = Calendar.getInstance();
+                lastYear.add(Calendar.YEAR, -1);
+
+                calendarPickerView = (CalendarPickerView)
+                        getActivity().getLayoutInflater().inflate(R.layout.dialog_date_picker, null, false);
+                calendarPickerView.init(lastYear.getTime(), nextYear.getTime()).withSelectedDate(new Date());
+
+                AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).setTitle("选择日期")
+                        .setView(calendarPickerView)
+                        .setNegativeButton("Dismiss", new DialogInterface.OnClickListener() {
+                            @Override public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                            }
+                        })
+                        .setPositiveButton("ok", new DialogInterface.OnClickListener(){
+                            @Override public void onClick(DialogInterface dialogInterface, int i) {
+                                pickedDate = calendarPickerView.getSelectedDate();
+                                Log.i("ljj","pick:"+pickedDate.toString());
+                            }
+                        })
+                        .create();
+
+                alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                    @Override
+                    public void onShow(DialogInterface dialogInterface) {
+                        calendarPickerView.fixDialogDimens();
+                    }
+                });
+                alertDialog.show();
+                initStateInfos(pickedDate);
             }
         });
 
@@ -220,22 +276,18 @@ public class CenterFragment extends Fragment {
         textViewUpPullTitle = (TextView)view.findViewById(R.id.textViewUpPanelTitle);
         textViewUpPullTitle.setText(context.getString(R.string.title_piano_room)+context.getString(R.string.title_end_notice));
         listViewNotices = (ListView)view.findViewById(R.id.listViewNotices);
-
-        initNotifications();
-
         View footerView = LayoutInflater.from(context).inflate(R.layout.item_list_dialog_footer, null);
+        listViewNotices.addFooterView(footerView);
+        noticeOffset = 0;
+        initNotifications(noticeOffset);
         ImageButton imageButtonLoadMore = (ImageButton)footerView.findViewById(R.id.imageButtonMore);
         imageButtonLoadMore.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                loadMoreNotifications();
+                noticeOffset += 10;
+                initNotifications(noticeOffset);
             }
         });
-        listViewNotices.addFooterView(footerView);
-
-        notificationListAdapter = new NotificationListAdapter(context, R.layout.item_list_notification, notifications);
-        listViewNotices.setAdapter(notificationListAdapter);
-
         return view;
     }
 
@@ -294,8 +346,8 @@ public class CenterFragment extends Fragment {
     */
 
     //刷新，对GridView里面的数据的重新加载，生成StateInfos
-    //参数date，0：今天；1：明天
-    private void initStateInfos(int date){
+    //参数date
+    private void initStateInfos(Date date){
         stateInfos = new ArrayList<StateInfo>();
         StateInfo stateInfoNull = null;
         StateInfo stateInfoTmp = null;
@@ -321,39 +373,80 @@ public class CenterFragment extends Fragment {
         }
     }
 
-    //初始化通知
-    private void initNotifications(){
-        notifications = new ArrayList<Map<String, String>>();
-        for (int i=0;i<10;i++){
-            Map<String, String> temp = new HashMap<String, String>();
-            temp.put("title","biaoti:"+i);
-            temp.put("time","shijian:"+i);
-            temp.put("type","leixing:"+i);
-            temp.put("content","zhengwen:"+i);
-            notifications.add(temp);
+    //初始化通知 加载更多
+    private void initNotifications(int offset){
+        if(offset == 0){
+            notifications = new ArrayList<Map<String, String>>();
         }
-    }
-    //加载更多通知
-    private void loadMoreNotifications(){
+        Map<String, String> temp;
+        List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+        pairs.add(new BasicNameValuePair("id","1"));
+        pairs.add(new BasicNameValuePair("offset",String.valueOf(offset)));
+        PostGetJson postGetJson = new PostGetJson(getString(R.string.postStadiumNotices),pairs);
+        String json = "";
+        JSONArray jsonArray = null;
+        try {
+            json = postGetJson.getJsonDate();
+            jsonArray = new JSONArray(json);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        if(json.equals("")||json.equals("{}")||jsonArray==null){
+            return;
+        }
+        for(int i=0;i<jsonArray.length();i++){
+            temp = new HashMap<String, String>();
+            try {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                temp.put("title",jsonObject.getString("title"));
+                temp.put("time",jsonObject.getString("time"));
+                temp.put("content",jsonObject.getString("content"));
+                notifications.add(temp);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
 
+        if(offset==0){
+            notificationListAdapter = new NotificationListAdapter(context, R.layout.item_list_notification, notifications);
+            listViewNotices.setAdapter(notificationListAdapter);
+        }else{
+            notificationListAdapter.notifyDataSetChanged();
+        }
     }
 
     //初始化评论
     //参数，room：房间号
-    private void initComments(int room){
-        comments = new ArrayList<Map<String, String>>();
-        for(int i=0;i<10;i++){
-            Map<String, String> temp = new HashMap<String, String>();
-            temp.put("content","pinglun");
-            temp.put("time","00:00");
-            temp.put("user","wo");
-            temp.put("id",""+i);
-            comments.add(temp);
+    private void initComments(int room, int offset){
+        if(offset==0){
+            comments = new ArrayList<Map<String, String>>();
         }
-    }
-    //加载更多评论
-    //参数，room：房间号
-    private void loadMoreComments(int room){
+        HttpGet httpGet = new HttpGet(getString(R.string.getComments)+"?site_id="+"1"+"&room_id="
+                +String.valueOf(room)+"&offset="+String.valueOf(offset));//暂时只是1说明是琴房的数据
+        HttpClient httpClient = new DefaultHttpClient();
+        HttpResponse httpResponse = null;
+        String json = "";
+        JSONArray jsonArray = null;
+        try {
+            httpResponse = httpClient.execute(httpGet);
+            json = EntityUtils.toString(httpResponse.getEntity());
+            jsonArray = new JSONArray(json);
+            for(int i=0;i<jsonArray.length();i++){
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                Map<String, String> temp = new HashMap<String, String>();
+                temp.put("content",jsonObject.getString("content"));
+                temp.put("time",jsonObject.getString("time"));
+                temp.put("user",jsonObject.getString("user_id"));
+                temp.put("id",jsonObject.getString("id"));
+                comments.add(temp);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
     /*
     * 数据部分！------------------------------------------------------------------------------------
@@ -455,18 +548,23 @@ public class CenterFragment extends Fragment {
         textViewResume.setText("简介：");
 
         //评论
-        initComments(roomNum);
+        commentOffset = 0;
+        initComments(roomNum,commentOffset);
         View footerView = LayoutInflater.from(context).inflate(R.layout.item_list_dialog_footer, null);
+        listViewComments.addFooterView(footerView);
+        roomCommentAdapter = new RoomCommentAdapter(context, R.layout.item_list_dialog_comment, comments);
+        listViewComments.setAdapter(roomCommentAdapter);
+
         ImageButton imageButtonLoadMore = (ImageButton)footerView.findViewById(R.id.imageButtonMore);
         imageButtonLoadMore.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                loadMoreComments(roomNum);
+                commentOffset += 10;
+                initComments(roomNum,commentOffset);
+                roomCommentAdapter.notifyDataSetChanged();
             }
         });
-        listViewComments.addFooterView(footerView);
-        RoomCommentAdapter roomCommentAdapter = new RoomCommentAdapter(context, R.layout.item_list_dialog_comment, comments);
-        listViewComments.setAdapter(roomCommentAdapter);
+
 
         //发表评论
         imageButtonSubmitCmt.setOnClickListener(new OnClickListener() {

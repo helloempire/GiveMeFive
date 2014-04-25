@@ -14,11 +14,25 @@
 
     <string name="admin_title_maxday">可以预定的最大天数</string>
     <string name="admin_title_resume">简介</string>
+    <string name="admin_title_rule">规则</string>
     <string name="admin_title_notice">公告：</string>
     <string name="admin_button_add_notice">新增公告</string>
 
     <string name="save">保存</string>
     <string name="undo">取消</string>
     <string name="delete">删除</string>
+
+    <!--接口-->
+    <string name="getStadiumBaseInfo">http://givemefive.dongyueweb.com/index.php/place/show_base_info?id=</string>
+    <string name="postStadiumNotices">http://givemefive.dongyueweb.com/index.php/place/show_notice</string>
+    <string name="postStadiumChangeInfo">http://givemefive.dongyueweb.com/index.php/place/change</string>
+    <string name="postStadiumAddNotice">http://givemefive.dongyueweb.com/index.php/place/add_notice</string>
+    <string name="postStadiumChangeNotice">http://givemefive.dongyueweb.com/index.php/place/change_notice</string>
+    <string name="postStadiumDeleteNotice">http://givemefive.dongyueweb.com/index.php/place/delete_notice</string>
+    <string name="getComments">http://givemefive.dongyueweb.com/index.php/comment/getComment</string>
+
+    <string name="day_name_format">EEE</string>
+    <string name="invalid_date">Date must be between %1$s and %2$s.</string>
+    <string name="month_name_format">MMMM yyyy</string>
 
 </resources>

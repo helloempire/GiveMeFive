@@ -83,8 +83,8 @@
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="查看明天"
-                    android:id="@+id/buttonTomorrow" />
+                    android:text="选择日期"
+                    android:id="@+id/buttonDatePicker" />
             </LinearLayout>
 
 
@@ -172,7 +172,7 @@
                         android:orientation="vertical">
 
                         <ListView
-                            android:layout_width="wrap_content"
+                            android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
                             android:id="@+id/listViewNotices" />
 
