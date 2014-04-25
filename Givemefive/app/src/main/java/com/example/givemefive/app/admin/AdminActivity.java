@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -53,6 +55,7 @@ public class AdminActivity extends Activity {
     private String rule="";
     private List<Map<String, String>> notificationList;
     private NotificationListAdapter notificationListAdapter;
+    private int noticeOffset = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,7 +129,7 @@ public class AdminActivity extends Activity {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        initListView();
+                        initNotification(noticeOffset);
                         dialog.hide();
                     }
                 });
@@ -142,7 +145,18 @@ public class AdminActivity extends Activity {
         });
 
         //公告列表
-        initListView();
+        View footerView = LayoutInflater.from(AdminActivity.this).inflate(R.layout.item_list_dialog_footer, null);
+        listViewNotifications.addFooterView(footerView);
+        initNotification(0);
+        ImageButton imageButtonLoadMore = (ImageButton)footerView.findViewById(R.id.imageButtonMore);
+        imageButtonLoadMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                noticeOffset += 10;
+                initNotification(noticeOffset);
+            }
+        });
+
 
         listViewNotifications.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -180,7 +194,7 @@ public class AdminActivity extends Activity {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        initListView();
+                        initNotification(noticeOffset);
                         dialog.hide();
                     }
                 });
@@ -201,7 +215,7 @@ public class AdminActivity extends Activity {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        initListView();
+                        initNotification(noticeOffset);
                         dialog.hide();
                     }
                 });
@@ -209,13 +223,6 @@ public class AdminActivity extends Activity {
                 dialog.show();
             }
         });
-    }
-
-    //初始化
-    private void initListView(){
-        initNotificationString();
-        notificationListAdapter = new NotificationListAdapter(AdminActivity.this,R.layout.item_list_notification,notificationList);
-        listViewNotifications.setAdapter(notificationListAdapter);
     }
 
     /*
@@ -243,11 +250,14 @@ public class AdminActivity extends Activity {
     }
 
     //初始化通知信息
-    private void initNotificationString(){
-        notificationList = new ArrayList<Map<String, String>>();
+    private void initNotification(int offset){
+        if(offset==0){
+            notificationList = new ArrayList<Map<String, String>>();
+        }
         Map<String, String> temp;
         List<NameValuePair> pairs = new ArrayList<NameValuePair>();
         pairs.add(new BasicNameValuePair("id","1"));
+        pairs.add(new BasicNameValuePair("offset",String.valueOf(offset)));
         PostGetJson postGetJson = new PostGetJson(getString(R.string.postStadiumNotices),pairs);
         String json = "";
         JSONArray jsonArray = null;
@@ -274,6 +284,12 @@ public class AdminActivity extends Activity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+        }
+        if(offset==0){
+            notificationListAdapter = new NotificationListAdapter(AdminActivity.this,R.layout.item_list_notification,notificationList);
+            listViewNotifications.setAdapter(notificationListAdapter);
+        }else{
+            notificationListAdapter.notifyDataSetChanged();
         }
     }
 

@@ -93,9 +93,12 @@ public class CenterFragment extends Fragment {
     private ListView listViewNotices;
     private NotificationListAdapter notificationListAdapter;
     private List<Map<String, String>> notifications;
+    private int noticeOffset = 0;
 
     //评论
     private List<Map<String,String>> comments;
+    private int commentOffset = 0;
+    private RoomCommentAdapter roomCommentAdapter;
 
     public CenterFragment(Context con, int centerId){
         context = con;
@@ -234,22 +237,18 @@ public class CenterFragment extends Fragment {
         textViewUpPullTitle = (TextView)view.findViewById(R.id.textViewUpPanelTitle);
         textViewUpPullTitle.setText(context.getString(R.string.title_piano_room)+context.getString(R.string.title_end_notice));
         listViewNotices = (ListView)view.findViewById(R.id.listViewNotices);
-
-        initNotifications();
-
         View footerView = LayoutInflater.from(context).inflate(R.layout.item_list_dialog_footer, null);
+        listViewNotices.addFooterView(footerView);
+        noticeOffset = 0;
+        initNotifications(noticeOffset);
         ImageButton imageButtonLoadMore = (ImageButton)footerView.findViewById(R.id.imageButtonMore);
         imageButtonLoadMore.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                loadMoreNotifications();
+                noticeOffset += 10;
+                initNotifications(noticeOffset);
             }
         });
-        listViewNotices.addFooterView(footerView);
-
-        notificationListAdapter = new NotificationListAdapter(context, R.layout.item_list_notification, notifications);
-        listViewNotices.setAdapter(notificationListAdapter);
-
         return view;
     }
 
@@ -335,12 +334,15 @@ public class CenterFragment extends Fragment {
         }
     }
 
-    //初始化通知
-    private void initNotifications(){
-        notifications = new ArrayList<Map<String, String>>();
+    //初始化通知 加载更多
+    private void initNotifications(int offset){
+        if(offset == 0){
+            notifications = new ArrayList<Map<String, String>>();
+        }
         Map<String, String> temp;
         List<NameValuePair> pairs = new ArrayList<NameValuePair>();
         pairs.add(new BasicNameValuePair("id","1"));
+        pairs.add(new BasicNameValuePair("offset",String.valueOf(offset)));
         PostGetJson postGetJson = new PostGetJson(getString(R.string.postStadiumNotices),pairs);
         String json = "";
         JSONArray jsonArray = null;
@@ -367,17 +369,23 @@ public class CenterFragment extends Fragment {
                 e.printStackTrace();
             }
         }
-    }
-    //加载更多通知
-    private void loadMoreNotifications(){
 
+        if(offset==0){
+            notificationListAdapter = new NotificationListAdapter(context, R.layout.item_list_notification, notifications);
+            listViewNotices.setAdapter(notificationListAdapter);
+        }else{
+            notificationListAdapter.notifyDataSetChanged();
+        }
     }
 
     //初始化评论
     //参数，room：房间号
-    private void initComments(int room){
-        comments = new ArrayList<Map<String, String>>();
-        HttpGet httpGet = new HttpGet(getString(R.string.getComments)+"?site_id="+"1"+"&room_id="+String.valueOf(room));//暂时只是1说明是琴房的数据
+    private void initComments(int room, int offset){
+        if(offset==0){
+            comments = new ArrayList<Map<String, String>>();
+        }
+        HttpGet httpGet = new HttpGet(getString(R.string.getComments)+"?site_id="+"1"+"&room_id="
+                +String.valueOf(room)+"&offset="+String.valueOf(offset));//暂时只是1说明是琴房的数据
         HttpClient httpClient = new DefaultHttpClient();
         HttpResponse httpResponse = null;
         String json = "";
@@ -400,10 +408,6 @@ public class CenterFragment extends Fragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-    }
-    //加载更多评论
-    //参数，room：房间号
-    private void loadMoreComments(int room){
     }
     /*
     * 数据部分！------------------------------------------------------------------------------------
@@ -505,18 +509,23 @@ public class CenterFragment extends Fragment {
         textViewResume.setText("简介：");
 
         //评论
-        initComments(roomNum);
+        commentOffset = 0;
+        initComments(roomNum,commentOffset);
         View footerView = LayoutInflater.from(context).inflate(R.layout.item_list_dialog_footer, null);
+        listViewComments.addFooterView(footerView);
+        roomCommentAdapter = new RoomCommentAdapter(context, R.layout.item_list_dialog_comment, comments);
+        listViewComments.setAdapter(roomCommentAdapter);
+
         ImageButton imageButtonLoadMore = (ImageButton)footerView.findViewById(R.id.imageButtonMore);
         imageButtonLoadMore.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                loadMoreComments(roomNum);
+                commentOffset += 10;
+                initComments(roomNum,commentOffset);
+                roomCommentAdapter.notifyDataSetChanged();
             }
         });
-        listViewComments.addFooterView(footerView);
-        RoomCommentAdapter roomCommentAdapter = new RoomCommentAdapter(context, R.layout.item_list_dialog_comment, comments);
-        listViewComments.setAdapter(roomCommentAdapter);
+
 
         //发表评论
         imageButtonSubmitCmt.setOnClickListener(new OnClickListener() {
