@@ -4,8 +4,10 @@ package com.example.givemefive.app;
  * Created by cyy on 14-3-15.
  */
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -28,6 +30,8 @@ import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +41,9 @@ import com.example.givemefive.app.adapters.NotificationListAdapter;
 import com.example.givemefive.app.adapters.RoomCommentAdapter;
 import com.example.givemefive.app.adapters.SomeRoomListAdapter;
 import com.example.givemefive.app.adapters.SomeTimeListAdapter;
+import com.example.givemefive.app.admin.AdminActivity;
 import com.example.givemefive.app.capricorn.RayMenu;
+import com.example.givemefive.app.timessquare.CalendarPickerView;
 import com.example.givemefive.app.tools.PostGetJson;
 
 import org.apache.http.HttpResponse;
@@ -71,7 +77,7 @@ public class CenterFragment extends Fragment {
 
     private Button buttonHelp;
     private TextView textViewIntroduction;
-    private Button buttonTomorrow;
+    private Button buttonDatePicker;
     private ImageButton buttonRefresh;
 
     private Spinner spinnerSelectTime;
@@ -99,6 +105,11 @@ public class CenterFragment extends Fragment {
     private List<Map<String,String>> comments;
     private int commentOffset = 0;
     private RoomCommentAdapter roomCommentAdapter;
+
+    //时间选择器
+    private CalendarPickerView calendarPickerView;
+    private Date pickedDate;
+    private Date todayDate;
 
     public CenterFragment(Context con, int centerId){
         context = con;
@@ -129,6 +140,8 @@ public class CenterFragment extends Fragment {
                 BEGIN_TIME = 10;
                 break;
         }
+        todayDate = Calendar.getInstance().getTime();
+        pickedDate = Calendar.getInstance().getTime();
     }
 
     /*
@@ -159,7 +172,7 @@ public class CenterFragment extends Fragment {
         //情况表
         gridView = (GridView)view.findViewById(R.id.gridViewTable);
         registerForContextMenu(gridView);
-        initStateInfos(0);
+        initStateInfos(todayDate);
         mainGridViewAdapter = new MainGridViewAdapter(context,stateInfos, TOTAL_ROOM, TOTAL_TIME, BEGIN_TIME);//19间琴房，7个时间段
         gridView.setNumColumns(TOTAL_ROOM+1);
         gridView.setHorizontalScrollBarEnabled(true);
@@ -170,7 +183,8 @@ public class CenterFragment extends Fragment {
         buttonRefresh.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                initStateInfos(0);
+                initStateInfos(todayDate);
+                mainGridViewAdapter.notifyDataSetChanged();
             }
         });
 
@@ -187,18 +201,43 @@ public class CenterFragment extends Fragment {
             }
         });
 
-        //查看明天的情况
-        buttonTomorrow = (Button)view.findViewById(R.id.buttonTomorrow);
-        buttonTomorrow.setOnClickListener(new OnClickListener() {
+        //查看其它日期的情况
+        buttonDatePicker = (Button)view.findViewById(R.id.buttonDatePicker);
+        buttonDatePicker.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (buttonTomorrow.getText().equals("查看明天")){
-                    buttonTomorrow.setText("查看今天");
-                    initStateInfos(1);
-                }else {
-                    buttonTomorrow.setText("查看明天");
-                    initStateInfos(0);
-                }
+                final Calendar nextYear = Calendar.getInstance();
+                nextYear.add(Calendar.YEAR, 1);
+                final Calendar lastYear = Calendar.getInstance();
+                lastYear.add(Calendar.YEAR, -1);
+
+                calendarPickerView = (CalendarPickerView)
+                        getActivity().getLayoutInflater().inflate(R.layout.dialog_date_picker, null, false);
+                calendarPickerView.init(lastYear.getTime(), nextYear.getTime()).withSelectedDate(new Date());
+
+                AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).setTitle("选择日期")
+                        .setView(calendarPickerView)
+                        .setNegativeButton("Dismiss", new DialogInterface.OnClickListener() {
+                            @Override public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                            }
+                        })
+                        .setPositiveButton("ok", new DialogInterface.OnClickListener(){
+                            @Override public void onClick(DialogInterface dialogInterface, int i) {
+                                pickedDate = calendarPickerView.getSelectedDate();
+                                Log.i("ljj","pick:"+pickedDate.toString());
+                            }
+                        })
+                        .create();
+
+                alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                    @Override
+                    public void onShow(DialogInterface dialogInterface) {
+                        calendarPickerView.fixDialogDimens();
+                    }
+                });
+                alertDialog.show();
+                initStateInfos(pickedDate);
             }
         });
 
@@ -307,8 +346,8 @@ public class CenterFragment extends Fragment {
     */
 
     //刷新，对GridView里面的数据的重新加载，生成StateInfos
-    //参数date，0：今天；1：明天
-    private void initStateInfos(int date){
+    //参数date
+    private void initStateInfos(Date date){
         stateInfos = new ArrayList<StateInfo>();
         StateInfo stateInfoNull = null;
         StateInfo stateInfoTmp = null;
