@@ -21,7 +21,7 @@
         <EditText
             android:layout_height="wrap_content"
             android:id="@+id/Username"
-            android:selectAllOnFocus="true"
+            android:selectAllOnFocus="false"
             android:lines="1"
             android:hint="请输入用户名"
             android:inputType="text"
@@ -38,7 +38,7 @@
         <EditText
             android:layout_height="wrap_content"
             android:id="@+id/Password"
-            android:selectAllOnFocus="true"
+            android:selectAllOnFocus="false"
             android:lines="1"
             android:hint="请输入密码"
             android:inputType="textPassword"
