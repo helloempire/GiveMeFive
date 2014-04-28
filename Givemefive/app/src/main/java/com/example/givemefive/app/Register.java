@@ -10,7 +10,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -129,19 +128,17 @@ public class Register extends Activity {
                 //httpPost = new  HttpPost(url + "/index.php/user/appgenerallogin");
                 httpPost = new HttpPost(url + "/index.php/user/create_memeber");
 
+                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("username",username);
+                jsonObject.put("password",password);
+                jsonObject.put("studentnumber",stuID);
+
+                nameValuePairs.add(new BasicNameValuePair("signinfo",jsonObject.toString()));
+
                 Log.i("testdatabase", "inputusername = " + username);
                 Log.i("testdatabase","inputpassword = " + password);
-
-                //创建一个用户，用于向服务端发送数据时，存放的实体
-                NameValuePair nameValuePair1 = new BasicNameValuePair("username",username);
-                NameValuePair nameValuePair2 = new BasicNameValuePair("password",password);
-                NameValuePair nameValuePair3 = new BasicNameValuePair("studentnumber",stuID);
-                //NameValuePair nameValuePair4 = new BasicNameValuePair("email",email);
-                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-                nameValuePairs.add(nameValuePair1);
-                nameValuePairs.add(nameValuePair2);
-                nameValuePairs.add(nameValuePair3);
-                //nameValuePairs.add(nameValuePair4);
 
 
                 Toast.makeText(this.getApplicationContext(),
